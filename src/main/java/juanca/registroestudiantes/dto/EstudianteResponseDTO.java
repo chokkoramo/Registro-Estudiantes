@@ -1,5 +1,6 @@
 package juanca.registroestudiantes.dto;
 
+import juanca.registroestudiantes.model.Estudiante;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -11,4 +12,5 @@ public class EstudianteResponseDTO {
     private String programa;
     private double promedio;
     private boolean aprobado;
+
 }

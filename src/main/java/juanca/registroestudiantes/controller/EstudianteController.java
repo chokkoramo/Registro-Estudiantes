@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/estudiantes")
 public class EstudianteController {
@@ -64,13 +65,28 @@ public class EstudianteController {
     }
 
     @GetMapping("/ranking")
-    public List<Estudiante> ranking(){
-        return sistema.generarRanking();
+    public List<EstudianteResponseDTO> ranking(){
+        return sistema.generarRanking()
+                .stream()
+                .map(this::convertir)
+                .toList();
     }
 
     @GetMapping
-    public List<Estudiante> listar(){
-        return sistema.obtenerTodos();
+    public List<EstudianteResponseDTO> listar(){
+        return sistema.obtenerTodos()
+                .stream()
+                .map(this::convertir)
+                .toList();
     }
 
+    private EstudianteResponseDTO convertir(Estudiante estudiante) {
+        return EstudianteResponseDTO.builder()
+                .id(estudiante.getId())
+                .nombre(estudiante.getNombre())
+                .programa(estudiante.getPrograma())
+                .promedio(estudiante.calcularPromedio())
+                .aprobado(estudiante.estaAprobado())
+                .build();
+    }
 }
