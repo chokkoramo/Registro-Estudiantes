@@ -1,4 +1,4 @@
-package juanca.registroestudiantes.Modelo;
+package juanca.registroestudiantes.model;
 
 import java.util.ArrayList;
 import java.util.List;

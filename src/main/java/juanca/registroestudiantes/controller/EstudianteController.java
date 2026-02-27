@@ -1,7 +1,7 @@
-package juanca.registroestudiantes.Controller;
+package juanca.registroestudiantes.controller;
 
-import juanca.registroestudiantes.Modelo.Estudiante;
-import juanca.registroestudiantes.Modelo.SistemaAcademico;
+import juanca.registroestudiantes.model.Estudiante;
+import juanca.registroestudiantes.model.SistemaAcademico;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
