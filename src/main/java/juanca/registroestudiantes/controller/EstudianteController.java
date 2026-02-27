@@ -45,7 +45,7 @@ public class EstudianteController {
     }
 
     @GetMapping("/{id}/promedio")
-    public double promedio(@PathVariable Long id) throws RuntimeException {
+    public double promedio(@PathVariable Long id) {
         Estudiante e = sistema.buscarPorId(id);
 
         if(e == null) throw new EstudianteNoEncontradoException(id);
