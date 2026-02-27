@@ -1,5 +1,9 @@
 package juanca.registroestudiantes.controller;
 
+import juanca.registroestudiantes.dto.EstudianteRequestDTO;
+import juanca.registroestudiantes.dto.EstudianteResponseDTO;
+import juanca.registroestudiantes.dto.NotaDTO;
+import juanca.registroestudiantes.exception.EstudianteNoEncontradoException;
 import juanca.registroestudiantes.model.Estudiante;
 import juanca.registroestudiantes.model.SistemaAcademico;
 import org.springframework.web.bind.annotation.*;
@@ -17,25 +21,33 @@ public class EstudianteController {
     }
 
     @PostMapping
-    public Estudiante registrar(@RequestBody Estudiante estudiante){
-        return sistema.registrarEstudiante(
-                estudiante.getNombre(),
-                estudiante.getPrograma()
+    public EstudianteResponseDTO registrar(@RequestBody EstudianteRequestDTO dto){
+        Estudiante estudiante = sistema.registrarEstudiante(
+                dto.getNombre(),
+                dto.getPrograma()
         );
+
+        return EstudianteResponseDTO.builder()
+                .id(estudiante.getId())
+                .nombre(estudiante.getNombre())
+                .programa(estudiante.getPrograma())
+                .promedio(estudiante.calcularPromedio())
+                .aprobado(estudiante.estaAprobado())
+                .build();
     }
 
     @PostMapping("/{id}/notas")
     public String asignarNota(@PathVariable Long id,
-                              @RequestBody double nota){
-        sistema.asignarNota(id, nota);
-        return "Se asigno" + nota;
+                              @RequestBody NotaDTO dto){
+        sistema.asignarNota(id, dto.getNota());
+        return "Se asigno " + dto.getNota();
     }
 
     @GetMapping("/{id}/promedio")
     public double promedio(@PathVariable Long id) throws RuntimeException {
         Estudiante e = sistema.buscarPorId(id);
 
-        if(e == null) throw new RuntimeException("Estudiante no encontrado");
+        if(e == null) throw new EstudianteNoEncontradoException(id);
         return e.calcularPromedio();
     }
 
@@ -45,7 +57,7 @@ public class EstudianteController {
         Estudiante e = sistema.buscarPorId(id);
 
         if(e==null){
-            throw new RuntimeException("Estudiante no encontrado");
+            throw new EstudianteNoEncontradoException(id);
         }
 
         return e.estaAprobado() ? "APROBADO":"REPROBADO";
