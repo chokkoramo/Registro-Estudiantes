@@ -1,18 +1,33 @@
 package juanca.registroestudiantes.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Entity
 @Getter
+@NoArgsConstructor
 public class Estudiante {
 
-    private final Long id;
-    private final String nombre;
-    private final String programa;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+    private String programa;
     private final List<Double> notas = new ArrayList<>();
+
+    public Estudiante(String programa, String nombre) {
+        this.programa = programa;
+        this.nombre = nombre;
+    }
 
     public Estudiante(Long id, String nombre, String programa) {
         if(nombre == null || nombre.isBlank()){
