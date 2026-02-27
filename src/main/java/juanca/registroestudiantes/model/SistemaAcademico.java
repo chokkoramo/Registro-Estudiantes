@@ -1,13 +1,14 @@
 package juanca.registroestudiantes.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SistemaAcademico {
 
-    private List<Estudiante> estudiantes = new ArrayList<>();
+    private final List<Estudiante> estudiantes = new ArrayList<>();
     private Long contadorId = 1L;
-    private String nombreSistema = "Sistema Academico";
 
     public Estudiante registrarEstudiante(String nombre, String programa){
         Estudiante e = new Estudiante(contadorId++, nombre, programa);
@@ -15,53 +16,35 @@ public class SistemaAcademico {
         return e;
     }
 
-    public Estudiante buscarPor_Id(Long id){
-        for (Estudiante e : estudiantes) {
-            if (e.getId() == id) {
-                return e;
-            }
+    public Estudiante buscarPorId(Long id){
+        if(id == null){
+            throw new IllegalArgumentException("Id no puede ser null");
         }
-        return null;
+
+        return estudiantes.stream()
+                .filter(e->e.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
-    public void asignar_Notas(Long id, double nota){
-        if(id != null){
-            if(nota >= 0){
-                if(nota <= 5){
-                    Estudiante e = buscarPor_Id(id);
-                    if(e != null){
-                        if(e.getPrograma() != null){
-                            e.agregar_Notas(nota);
-                        }
-                    }
-                }
-            }
+    public void asignarNota(Long id, double nota){
+        Estudiante e = buscarPorId(id);
+        if(e == null){
+            throw new IllegalArgumentException("Estudiante no encontrado");
         }
+        e.agregarNota(nota);
     }
 
     public List<Estudiante> generarRanking(){
+        List<Estudiante> ranking = new ArrayList<>(estudiantes);
 
-        estudiantes.sort((a, b) -> {
+        ranking.sort(Comparator.comparingDouble(Estudiante::calcularPromedio)
+                .reversed());
 
-            double sumaA = 0;
-            for(Double n : a.getNotas()){
-                sumaA += n;
-            }
-            double promA = a.getNotas().isEmpty() ? 0 : sumaA / a.getNotas().size();
-
-            double sumaB = 0;
-            for(Double n : b.getNotas()){
-                sumaB += n;
-            }
-            double promB = b.getNotas().isEmpty() ? 0 : sumaB / b.getNotas().size();
-
-            return Double.compare(promB, promA);
-        });
-
-        return estudiantes;
+        return ranking;
     }
 
     public List<Estudiante> obtenerTodos(){
-        return estudiantes;
+        return Collections.unmodifiableList(estudiantes);
     }
 }
