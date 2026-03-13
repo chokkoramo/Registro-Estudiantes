@@ -18,12 +18,47 @@ class EstudianteTest {
     }
 
     @Test
-    void testAgregarNotasInvalida(){
-        Estudiante estudiante = new Estudiante(1L, "Walter", "Administracion de empresas");
-
-        assertThrows(IllegalArgumentException.class, () -> estudiante.agregarNota(6));
-        assertThrows(IllegalArgumentException.class, () -> estudiante.agregarNota(-1));
+    @DisplayName("Debe asignar nota valida")
+    void testAsignarNotaValida() {
+        Estudiante e = new Estudiante();
+        e.agregarNota(4.5);
+        assertTrue(e.getNotas().contains(4.5));
     }
+
+    @Test
+    @DisplayName("Debe lanzar excepcion por nota mayor a 5")
+    void testAgregarNotaMayorACinco(){
+        Estudiante e = new Estudiante();
+        assertThrows(IllegalArgumentException.class, () -> e.agregarNota(6));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar excepcion por nota menor a 0")
+    void testAgregarNotaMenorACero(){
+        Estudiante e = new Estudiante();
+        assertThrows(IllegalArgumentException.class, () -> e.agregarNota(-2));
+    }
+
+    @Test
+    void testValoresLimites(){
+        Estudiante e = new Estudiante();
+
+        assertDoesNotThrow(() -> e.agregarNota(5.0));
+        assertDoesNotThrow(() -> e.agregarNota(0.0));
+    }
+
+    @Test
+    @DisplayName("Debe ingresar los datos correctamente al constructor")
+    void testConstructorConParametros() {
+        String nombreEsperado = "Juan";
+        String programaEsperado = "Ingeniería";
+
+        Estudiante estudiante = new Estudiante(programaEsperado, nombreEsperado);
+
+        assertEquals(nombreEsperado, estudiante.getNombre());
+        assertEquals(programaEsperado, estudiante.getPrograma());
+    }
+
 
     @Test
     @DisplayName("Debe matar mutacion getNotas (devuelve los datos)")
