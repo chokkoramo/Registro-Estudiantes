@@ -75,5 +75,68 @@ class EstudianteControllerTest {
         mockMvc.perform(get("/estudiantes/99/promedio"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DisplayName("POST /estudiantes/{id}/notas - Debe asignar nota correctamente")
+    void testAsiganrNotaOk() throws Exception {
+        NotaDTO nota = new NotaDTO(4.6);
+
+        mockMvc.perform(post("/estudiantes/1/notas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(nota)))
+                .andExpect((status().isOk()))
+                .andExpect(content().string("Se asigno 4.5"));
+
+        verify(sistemaMock).asignarNota(1L, 4.6);
+    }
+
+    @Test
+    @DisplayName("GET /estudiantes/{id}/promedio -  Debe retornar promedio")
+    void testPromedioOk() throws Exception {
+        Estudiante e = new Estudiante(1L, "Juan", "IngSoftware");
+        e.agregarNota(4.1);
+
+        when(sistemaMock.buscarPorId(1L)).thenReturn(e);
+
+        mockMvc.perform(get("/estudiantes/1/promedio"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("4.1"));
+    }
+
+    @Test
+    @DisplayName("GET /estudiantes/{id}/estado - Debe retornar APROBADO")
+    void testEstadoAprobado() throws Exception {
+        Estudiante e = mock(Estudiante.class);
+        when(e.estaAprobado()).thenReturn(true);
+        when(sistemaMock.buscarPorId(1L)).thenReturn(e);
+
+        mockMvc.perform(get("/estudiantes/1/estado"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("APROBADO"));
+    }
+
+    @Test
+    @DisplayName("GET /estudiantes/{id}/estado - Debe retornar REPROBADO")
+    void testEstadoReprobado() throws Exception {
+        Estudiante e = mock(Estudiante.class);
+        when(e.estaAprobado()).thenReturn(false);
+        when(sistemaMock.buscarPorId(1L)).thenReturn(e);
+
+        mockMvc.perform(get("/estudiantes/1/estado"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("REPROBADO"));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar excepción cuando el estudiante no existe")
+    void testEstudianteNoEncontrado() throws Exception {
+        when(sistemaMock.buscarPorId(99L)).thenReturn(null);
+
+        mockMvc.perform(get("/estudiantes/99/promedio"))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/estudiantes/99/estado"))
+                .andExpect(status().isNotFound());
+    }
 }
 
