@@ -75,7 +75,7 @@ class EstudianteTest {
         assertFalse(estudiante.estaAprobado(), "Con 2.0 no deberia estar aprobado");
 
         estudiante.agregarNota(4.0);
-        assertFalse(estudiante.estaAprobado(), "Con 4.0 deberia estar aprobado");
+        assertTrue(estudiante.estaAprobado(), "Con 4.0 deberia estar aprobado");
     }
 
 
