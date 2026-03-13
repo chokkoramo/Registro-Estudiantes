@@ -1,6 +1,5 @@
 package juanca.registroestudiantes.dto;
 
-import juanca.registroestudiantes.model.Estudiante;
 import lombok.Builder;
 import lombok.Getter;
 
