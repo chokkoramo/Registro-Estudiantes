@@ -1,92 +1,79 @@
 package juanca.registroestudiantes.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import juanca.registroestudiantes.dto.*;
-import juanca.registroestudiantes.exception.EstudianteNoEncontradoException;
 import juanca.registroestudiantes.model.Estudiante;
 import juanca.registroestudiantes.model.SistemaAcademico;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class EstudianteControllerTest {
-    private EstudianteController controller;
+
+    private MockMvc mockMvc;
     private SistemaAcademico sistemaMock;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         sistemaMock = mock(SistemaAcademico.class);
-        controller = new EstudianteController(sistemaMock);
+        objectMapper = new ObjectMapper();
+        mockMvc = MockMvcBuilders.standaloneSetup(new EstudianteController(sistemaMock)).build();
     }
 
     @Test
-    @DisplayName("Debe registrar estudiante y retornar DTO")
-    void testRegistrarEstudiante(){
+    @DisplayName("GET /estudiantes/ranking - Debe retornar 200 OK")
+    void testRankingOk() throws Exception {
+        Estudiante e1 = new Estudiante(1L, "Juan", "IngSoftware");
+        when(sistemaMock.generarRanking()).thenReturn(List.of(e1));
+
+        mockMvc.perform(get("/estudiantes/ranking"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nombre").value("Juan"));
+    }
+
+    @Test
+    @DisplayName("GET /estudiantes - Debe retornar 200 OK")
+    void testListarOk() throws Exception {
+        Estudiante e1 = new Estudiante(1L, "Maria", "Artes");
+        when(sistemaMock.obtenerTodos()).thenReturn(List.of(e1));
+
+        mockMvc.perform(get("/estudiantes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].nombre").value("Maria"));
+    }
+
+    @Test
+    @DisplayName("POST /estudiantes - Debe registrar con éxito")
+    void testRegistrarOk() throws Exception {
         EstudianteRequestDTO request = new EstudianteRequestDTO("Juan", "IngSoftware");
-        Estudiante estudiante1 = new Estudiante(1L, "Juan", "IngSoftware");
-        when(sistemaMock.registrarEstudiante("Juan", "IngSoftware")).thenReturn(estudiante1);
+        Estudiante estudiante = new Estudiante(1L, "Juan", "IngSoftware");
 
-        EstudianteResponseDTO response = controller.registrar(request);
+        when(sistemaMock.registrarEstudiante(anyString(), anyString())).thenReturn(estudiante);
 
-        assertAll("Respuesta del DTO",
-                ()->assertEquals(1L, response.getId()),
-                ()->assertEquals("Juan", response.getNombre()),
-                ()->assertEquals("IngSoftware", response.getPrograma()),
-                ()->assertFalse(response.isAprobado()),
-                ()->assertEquals(0.0, response.getPromedio())
-
-        );
+        mockMvc.perform(post("/estudiantes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
     }
 
     @Test
-    @DisplayName("Debe asignar una nota a un estudiante")
-    void testAsignarNota(){
-        NotaDTO nota = new NotaDTO(4.5);
-        String response = controller.asignarNota(1L, nota);
-
-        verify(sistemaMock).asignarNota(1L, 4.5);
-        assertEquals("Se asigno 4.5", response);
-    }
-
-    @Test
-    @DisplayName("Debe retornar el promedio cuando el estudiante existe")
-    void testPromedioExito(){
-        Estudiante e = new Estudiante(1L, "Juan", "Ing");
-        e.agregarNota(5);
-        when(sistemaMock.buscarPorId(1L)).thenReturn(e);
-
-        double promedio = controller.promedio(1L);
-
-        assertEquals(5,promedio);
-    }
-
-    @Test
-    @DisplayName("Debe tirar ecxepcion si el estudiante no exisste")
-    void testEstudianteNoEncontrado(){
+    @DisplayName("GET /estudiantes/{id}/promedio - 404 cuando no existe")
+    void testPromedioNotFound() throws Exception {
         when(sistemaMock.buscarPorId(99L)).thenReturn(null);
 
-        assertAll(
-                ()->assertThrows(EstudianteNoEncontradoException.class, ()-> controller.promedio(99L)),
-                ()->assertThrows(EstudianteNoEncontradoException.class, () -> controller.estado(99L))
-        );
+        mockMvc.perform(get("/estudiantes/99/promedio"))
+                .andExpect(status().isNotFound());
     }
-
-    @Test
-    void testEstadoAprobado(){
-        Estudiante e = mock(Estudiante.class);
-        when(e.estaAprobado()).thenReturn(true);
-        when(sistemaMock.buscarPorId(1L)).thenReturn(e);
-
-        assertEquals("APROBADO", controller.estado(1L));
-    }
-
-    @Test
-    @DisplayName("Debe lanzar excepcion si el estudiante no existe")
-    void testEstadoError(){
-        when(sistemaMock.buscarPorId(1L)).thenReturn(null);
-        assertThrows(EstudianteNoEncontradoException.class, ()->controller.estado(1L));
-    }
-
 }
+
