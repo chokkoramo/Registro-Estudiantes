@@ -46,11 +46,18 @@ class SistemaAcademicoTest {
         assertTrue(sa.generarRanking().isEmpty());
     }
 
-
-
     @Test
     void testListarEstudiantesVacios(){
         SistemaAcademico sa = new SistemaAcademico();
         assertTrue(sa.obtenerTodos().isEmpty());
+    }
+
+    @Test
+    void testObtenerTodosNull(){
+        SistemaAcademico sa = new SistemaAcademico();
+        Estudiante es1 = sa.registrarEstudiante("Juan",  "Software");
+        Estudiante es2 = sa.registrarEstudiante("Jose",  "Software");
+
+        assertFalse(sa.obtenerTodos().isEmpty());
     }
 }
