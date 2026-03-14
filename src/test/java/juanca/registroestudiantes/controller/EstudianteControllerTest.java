@@ -85,7 +85,7 @@ class EstudianteControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(nota)))
                 .andExpect((status().isOk()))
-                .andExpect(content().string("Se asigno 4.5"));
+                .andExpect(content().string("Se asigno 4.6"));
 
         verify(sistemaMock).asignarNota(1L, 4.6);
     }
