@@ -13,8 +13,11 @@ steps:
 
   # Tests normales
   - script: ./gradlew test
-    displayName: 'Run tests'
+    displayName: 'Correr tests'
 
   # Mutation testing con PIT
   - script: ./gradlew pitest
-    displayName: 'Mutation testing (PIT)'
+    displayName: 'Prueba de mutacion (PIT)'
+
+  - script: ./gradlew sonar
+    displayName: 'Analisis en sonar'
