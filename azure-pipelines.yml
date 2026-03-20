@@ -11,11 +11,6 @@ steps:
   - script: ./gradlew clean build
     displayName: 'Build proyecto'
 
-  # Tests normales
-  - script: ./gradlew test
-    displayName: 'Correr tests'
-
-  # Mutation testing con PIT
   - script: ./gradlew pitest
     displayName: 'Prueba de mutacion (PIT)'
 

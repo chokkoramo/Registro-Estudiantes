@@ -64,7 +64,7 @@ sonar {
     properties {
         property("sonar.projectKey", "Registro-Estudiantes")
         property("sonar.projectName", "Registro Estudiantes")
-        property("sonar.host.url", "http://localhost:9000" )
+        property("sonar.host.url", "http://sonarqube:9000" )
         property("sonar.token", project.findProperty("sonarToken") ?: "")
     }
 }
