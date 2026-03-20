@@ -15,4 +15,6 @@ steps:
     displayName: 'Prueba de mutacion (PIT)'
 
   - script: ./gradlew sonar
-    displayName: 'Analisis en sonar'
+    displayName: 'Análisis en Sonar'
+    env:
+      SONAR_TOKEN: $(SONAR_TOKEN)
