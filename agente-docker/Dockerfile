@@ -5,12 +5,18 @@ RUN apt-get update && apt-get install -y \
     git \
     jq \
     libicu-dev \
-    openjdk-17-jdk \
+    openjdk-21-jdk \
     maven
+
+RUN useradd -m agentuser
 
 WORKDIR /azp
 
 COPY start.sh .
 RUN chmod +x start.sh
+
+RUN chown -R agentuser:agentuser /azp
+
+USER agentuser
 
 CMD ["./start.sh"]
