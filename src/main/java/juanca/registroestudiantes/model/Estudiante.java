@@ -63,4 +63,8 @@ public class Estudiante {
     public List<Double> getNotas(){
         return Collections.unmodifiableList(notas);
     }
+
+    public static boolean validarRango(double nota){
+        return nota>= 0.0 && nota<=5.0;
+    }
 }
