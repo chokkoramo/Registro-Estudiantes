@@ -61,6 +61,7 @@ dependencies {
 
     testImplementation("io.cucumber:cucumber-java:7.18.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.18.0")
+    testImplementation("org.junit.platform:junit-platform-suite:1.10.0")
 }
 
 sonar {
@@ -76,7 +77,10 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.register<Test>("acceptanceTest") { useJUnitPlatform()
+tasks.register<Test>("acceptanceTest") {
+    useJUnitPlatform()
     description = "Runs Cucumber acceptance tests."
     group = "verification"
+
+    systemProperty("cucumber.plugin", "pretty")
 }
