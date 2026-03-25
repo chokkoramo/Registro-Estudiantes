@@ -73,6 +73,7 @@ sonar {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    systemProperty("file.encoding", "UTF-8")
 }
 
 tasks.register<Test>("acceptanceTest") {
