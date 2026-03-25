@@ -53,7 +53,7 @@ class EstudianteTest {
         String nombreEsperado = "Juan";
         String programaEsperado = "Ingeniería";
 
-        Estudiante estudiante = new Estudiante(programaEsperado, nombreEsperado);
+        Estudiante estudiante = new Estudiante(nombreEsperado, programaEsperado);
 
         assertEquals(nombreEsperado, estudiante.getNombre());
         assertEquals(programaEsperado, estudiante.getPrograma());
