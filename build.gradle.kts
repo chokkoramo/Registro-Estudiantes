@@ -58,6 +58,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    testImplementation("io.cucumber:cucumber-java:7.18.0")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.18.0")
+    testImplementation("org.junit.platform:junit-platform-suite:1.10.0")
 }
 
 sonar {
@@ -71,4 +75,12 @@ sonar {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.register<Test>("acceptanceTest") {
+    useJUnitPlatform()
+    description = "Runs Cucumber acceptance tests."
+    group = "verification"
+
+    systemProperty("cucumber.plugin", "pretty")
 }
