@@ -27,23 +27,6 @@ repositories {
 }
 
 dependencies {
-    pitest("org.pitest:pitest-junit5-plugin:1.2.1")
-}
-
-pitest {
-
-    pitestVersion.set("1.15.0")
-    junit5PluginVersion.set("1.2.1")
-
-    targetClasses.set(listOf("juanca.registroestudiantes.*"))
-    targetTests.set(listOf("juanca.registroestudiantes.*"))
-
-    threads.set(4)
-    outputFormats.set(listOf("HTML"))
-    timestampedReports.set(false)
-}
-
-dependencies {
 
     implementation("org.springframework.boot:spring-boot-h2console")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -57,19 +40,34 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
     testImplementation("io.cucumber:cucumber-java:7.18.0")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.18.0")
     testImplementation("org.junit.platform:junit-platform-suite:1.10.0")
+
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    pitest("org.pitest:pitest-junit5-plugin:1.2.1")
+}
+
+pitest {
+    pitestVersion.set("1.15.0")
+    junit5PluginVersion.set("1.2.1")
+
+    targetClasses.set(listOf("juanca.registroestudiantes.*"))
+    targetTests.set(listOf("juanca.registroestudiantes.*"))
+
+    threads.set(4)
+    outputFormats.set(listOf("HTML"))
+    timestampedReports.set(false)
 }
 
 sonar {
     properties {
         property("sonar.projectKey", "Registro-Estudiantes")
         property("sonar.projectName", "Registro Estudiantes")
-        property("sonar.host.url", "http://sonarqube:9000" )
-        property("sonar.token", project.findProperty("sonarToken") ?: "")
+        property("sonar.host.url", "http://sonarqube:9000")
+        property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
 
