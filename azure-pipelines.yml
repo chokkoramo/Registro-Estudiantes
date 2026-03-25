@@ -4,17 +4,49 @@ trigger:
 pool:
   name: Default
 
+variables:
+  projectDir: '.'
+
 steps:
-  - script: chmod +x gradlew
-    displayName: 'Dar permisos a Gradle'
+  - checkout: self
+    displayName: "Clonar repositorio"
+    clean: true
+    fetchDepth: 0
 
-  - script: ./gradlew clean build
-    displayName: 'Build proyecto'
+  - script: java -version
+    displayName: "Verificar versión de Java"
 
-  - script: ./gradlew pitest
-    displayName: 'Prueba de mutacion (PIT)'
+  - task: Gradle@2
+    displayName: 'Compilación y pruebas unitarias'
+    inputs:
+      workingDirectory: '$(projectDir)'
+      gradleWrapperFile: '$(projectDir)/gradlew'
+      gradleOptions: '-Dfile.encoding=UTF-8 -Xmx3072m'
+      tasks: 'clean build test'
+      publishJUnitResults: true
+      testResultsFiles: '**/build/test-results/test/TEST-*.xml'
 
-  - script: ./gradlew sonar
-    displayName: 'Análisis en Sonar'
+  - task: Gradle@2
+    displayName: 'Pruebas de aceptación (Cucumber)'
+    inputs:
+      workingDirectory: '$(projectDir)'
+      gradleWrapperFile: '$(projectDir)/gradlew'
+      tasks: 'acceptanceTest'
+      publishJUnitResults: true
+      testResultsFiles: '**/build/test-results/acceptanceTest/TEST-*.xml'
+
+  - task: Gradle@2
+    displayName: 'Pruebas de mutación (Pitest)'
+    inputs:
+      workingDirectory: '$(projectDir)'
+      gradleWrapperFile: '$(projectDir)/gradlew'
+      tasks: 'pitest'
+
+  - task: Gradle@2
+    displayName: 'Análisis de calidad (SonarQube)'
+    inputs:
+      workingDirectory: '$(projectDir)'
+      gradleWrapperFile: '$(projectDir)/gradlew'
+      tasks: 'sonarqube'
     env:
       SONAR_TOKEN: $(SONAR_TOKEN)
