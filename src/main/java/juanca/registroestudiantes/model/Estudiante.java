@@ -24,9 +24,10 @@ public class Estudiante {
     private String programa;
     private final List<Double> notas = new ArrayList<>();
 
-    public Estudiante(String programa, String nombre) {
-        this.programa = programa;
+    public Estudiante(String nombre, String
+                      programa, Double notas) {
         this.nombre = nombre;
+        this.programa = programa;
     }
 
     public Estudiante(Long id, String nombre, String programa) {
@@ -38,6 +39,11 @@ public class Estudiante {
         }
 
         this.id = id;
+        this.nombre = nombre;
+        this.programa = programa;
+    }
+
+    public Estudiante(String nombre, String programa) {
         this.nombre = nombre;
         this.programa = programa;
     }

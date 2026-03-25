@@ -11,24 +11,31 @@ public class RegistroNotasSteps {
     private double nota;
     private boolean validacion;
     private Estudiante estudiante;
+    private String nombre, programa;
 
-    @Given("Se ingresa una nota de {double}")
-    public void ingresarNota(double nota){
+    @Given("Crear estudiante con nombre {string} y programa {string} despues se le asigna una nota de {double}")
+    public void crearEstudianteConNota(String nombre, String programa, double nota) {
         this.nota = nota;
-        this.estudiante = new Estudiante("Ingenieria", "Juan");
+        this.nombre = nombre;
+        this.programa = programa;
+        this.estudiante = new Estudiante(nombre, programa);
     }
 
     @When("Se valida dentro del rango")
     public void validarRango(){
-        this.validacion = Estudiante.validarRango(nota);
-        if(validacion){
+        if(estudiante.validarRango(nota)){
             estudiante.agregarNota(nota);
         }
     }
 
     @Then("El sistema registra la nota")
     public void registrarNota(){
-        assertTrue(estudiante.getNotas().contains(nota),
-                "La nota se tiene que registrar");
+        assertAll(
+                ()->assertTrue(estudiante.getNotas().contains(nota),
+                        "La nota se tiene que registrar"),
+                ()->assertEquals(1,estudiante.getNotas().size())
+        );
+
     }
+
 }
