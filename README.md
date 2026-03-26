@@ -1,54 +1,112 @@
-# Sistema de Registro de Estudiantes
+# 📚 Registro de Estudiantes API
 
-##  Descripción
+![Java](https://img.shields.io/badge/Java-21-blue)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-Framework-brightgreen)
+![Gradle](https://img.shields.io/badge/Gradle-Kotlin%20DSL-02303A?logo=gradle)
+![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker)
+![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-CI%2FCD-blue?logo=azuredevops)
 
-Este proyecto consiste en una API REST desarrollada en Java con Spring Boot que permite gestionar estudiantes de manera básica.
+[![Build Status](https://dev.azure.com/Chokkoramo/Registro%20Estudiantes/_apis/build/status%2Fchokkoramo.Registro-Estudiantes?branchName=master)](https://dev.azure.com/Chokkoramo/Registro%20Estudiantes/_build/latest?definitionId=1&branchName=master)
+![Tests](https://img.shields.io/badge/tests-passing-success)
+![Coverage](https://img.shields.io/badge/coverage-80%25-yellowgreen)
+![Mutation Testing](https://img.shields.io/badge/mutation-tested-blueviolet)
+![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=Registro-Estudiantes&metric=alert_status)
+
+API REST desarrollada con **Java 21** y **Spring Boot**, orientada a la gestión de estudiantes y sus notas, aplicando buenas prácticas de desarrollo, pruebas automatizadas y aseguramiento de calidad mediante integración continua.
+
+---
+
+## 🚀 Características
 
 El sistema permite:
 
-- Registrar estudiantes
-- Asignar notas
-- Calcular promedio
-- Generar ranking académico
-- Consultar estudiantes registrados
+- Registrar estudiantes  
+- Asignar notas  
+- Calcular el promedio académico  
+- Generar ranking de estudiantes  
+- Consultar estudiantes registrados  
 
-Actualmente la información se almacena en memoria (sin base de datos).
-
----
-
-##  Arquitectura Actual
-
-El sistema fue construido con fines académicos y contiene decisiones de diseño que permiten posteriormente aplicar refactorización y mejoras de calidad.
-
-Características actuales:
-
-- Almacenamiento en memoria usando `ArrayList`
-- Lógica concentrada en una sola clase principal (`SistemaAcademico`)
-- Sin separación por capas (Controller, Service, Repository)
-- Sin persistencia de datos
+Actualmente, la información se maneja **en memoria** (sin base de datos).
 
 ---
 
-##  Problemas y Vulnerabilidades Identificadas
+## 🛠️ Tecnologías utilizadas
 
-El sistema presenta varios problemas detectables mediante análisis estático (por ejemplo, SonarQube):
-
-1. Retorno de `null` en métodos de búsqueda (riesgo de `NullPointerException`).
-2. Exposición directa de estructuras internas mutables (`List`).
-3. Alta complejidad cognitiva en algunos métodos.
-4. Falta de validación de parámetros.
-5. Ausencia de manejo adecuado de excepciones.
-6. Posible código duplicado en cálculos de promedio.
-7. Falta de encapsulamiento estricto.
-8. No se aplican principios SOLID.
+- Java 21  
+- Spring Boot  
+- Gradle (Kotlin DSL)  
+- Docker  
+- Azure DevOps  
 
 ---
 
-## Tecnologías Utilizadas
+## 🔄 Integración Continua (CI/CD)
 
-- Java 17
-- Spring Boot
-- Gradle
-- API REST
+El proyecto cuenta con un pipeline configurado en **Azure DevOps**, el cual se ejecuta utilizando un **agente local en Docker**.
+
+### El pipeline incluye:
+
+- Compilación del proyecto  
+- Ejecución de pruebas unitarias  
+- Análisis de calidad de código  
+- Pruebas de mutación  
+- Generación de reportes  
 
 ---
+
+## 🧪 Pruebas implementadas
+
+El proyecto incorpora múltiples niveles de pruebas para garantizar la calidad del software:
+
+### ✔️ Pruebas unitarias
+Realizadas con JUnit para validar la lógica del sistema.
+
+### ✔️ Pruebas de comportamiento (BDD)
+Implementadas con Cucumber, utilizando escenarios en Gherkin.
+
+### ✔️ Pruebas de calidad
+Integración con herramientas de análisis estático como SonarQube.
+
+### ✔️ Pruebas de mutación
+Uso de herramientas como PIT (Pitest) para evaluar la robustez de las pruebas.
+
+---
+
+## 🐳 Uso de Docker
+
+Se utiliza Docker para:
+
+- Ejecutar el agente de Azure DevOps  
+- Garantizar entornos reproducibles  
+- Facilitar la integración continua  
+
+---
+
+## 📁 Estructura del proyecto
+
+El proyecto sigue una arquitectura típica de Spring Boot:
+
+- `controller` → Manejo de endpoints REST  
+- `service` → Lógica de negocio  
+- `model` → Entidades del sistema  
+- `repository` → Persistencia (en memoria)  
+- `test` → Pruebas unitarias y de integración  
+
+---
+
+## 📌 Estado del proyecto
+
+Proyecto en evolución, con enfoque en:
+
+- Mejora continua de calidad  
+- Automatización de procesos  
+- Escalabilidad futura (posible integración con base de datos y despliegue en la nube)
+
+---
+
+## 📈 Mejoras futuras
+
+- Integración con base de datos (PostgreSQL/MySQL)  
+- Despliegue en la nube  
+- Autenticación y autorización (Spring Security)  
+- Documentación con Swagger/OpenAPI  
