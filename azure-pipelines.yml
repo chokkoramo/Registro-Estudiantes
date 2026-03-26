@@ -16,7 +16,7 @@ steps:
   - script: java -version
     displayName: "Verificar versión de Java"
 
-  - task: Gradle@2
+  - task: Gradle@3
     displayName: 'Compilación y pruebas unitarias'
     inputs:
       workingDirectory: '$(projectDir)'
@@ -26,7 +26,7 @@ steps:
       publishJUnitResults: true
       testResultsFiles: '**/build/test-results/test/TEST-*.xml'
 
-  - task: Gradle@2
+  - task: Gradle@3
     displayName: 'Pruebas de aceptación (Cucumber)'
     inputs:
       workingDirectory: '$(projectDir)'
@@ -35,18 +35,18 @@ steps:
       publishJUnitResults: true
       testResultsFiles: '**/build/test-results/acceptanceTest/TEST-*.xml'
 
-  - task: Gradle@2
+  - task: Gradle@3
     displayName: 'Pruebas de mutación (Pitest)'
     inputs:
       workingDirectory: '$(projectDir)'
       gradleWrapperFile: '$(projectDir)/gradlew'
       tasks: 'pitest'
 
-  - task: Gradle@2
+  - task: Gradle@3
     displayName: 'Análisis de calidad (SonarQube)'
     inputs:
       workingDirectory: '$(projectDir)'
       gradleWrapperFile: '$(projectDir)/gradlew'
-      tasks: 'sonarqube'
+      tasks: 'sonar'
     env:
       SONAR_TOKEN: $(SONAR_TOKEN)
