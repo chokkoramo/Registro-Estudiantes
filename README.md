@@ -10,7 +10,7 @@
 ![Tests](https://img.shields.io/badge/tests-passing-success)
 ![Coverage](https://img.shields.io/badge/coverage-80%25-yellowgreen)
 ![Mutation Testing](https://img.shields.io/badge/mutation-tested-blueviolet)
-![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=Registro-Estudiantes&metric=alert_status)
+![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=chokkoramo_Registro-Estudiantes&metric=alert_status)
 
 API REST desarrollada con **Java 21** y **Spring Boot**, orientada a la gestión de estudiantes y sus notas, aplicando buenas prácticas de desarrollo, pruebas automatizadas y aseguramiento de calidad mediante integración continua.
 
