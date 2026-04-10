@@ -47,6 +47,7 @@ steps:
     inputs:
       workingDirectory: '$(projectDir)'
       gradleWrapperFile: '$(projectDir)/gradlew'
-      tasks: 'build sonar'
+      tasks: 'sonar'
     env:
       SONAR_TOKEN: $(SONAR_TOKEN)
+      SONAR_HOST_URL: 'http://sonarqube:9000'

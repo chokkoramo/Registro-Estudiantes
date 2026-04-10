@@ -2,7 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "4.0.3"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.sonarqube") version "7.2.3.7755"
+    id("org.sonarqube") version "7.1.0.6387"
     id("info.solidsoft.pitest") version "1.19.0-rc.3"
 }
 
@@ -64,8 +64,10 @@ pitest {
 
 sonar {
     properties {
-        property("sonar.projectKey", "chokkoramo_Registro-Estudiantes")
-        property("sonar.organization", "chokkoramo")
+        property("sonar.projectKey", "Registro-Estudiantes")
+        property("sonar.projectName", "Registro Estudiantes")
+        property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "http://localhost:9000")
+        property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
     }
 }
 
