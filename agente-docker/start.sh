@@ -2,27 +2,23 @@
 set -e
 
 if [ -z "$AZP_URL" ]; then
-  echo "Falta AZP_URL"
+  echo "Error: Falta AZP_URL"
   exit 1
 fi
 
 if [ -z "$AZP_TOKEN" ]; then
-  echo "Falta AZP_TOKEN"
+  echo "Error: Falta AZP_TOKEN"
   exit 1
 fi
 
 AZP_POOL=${AZP_POOL:-Default}
 
-mkdir -p /azp
+# Nos aseguramos de estar en el directorio correcto
 cd /azp
 
-echo "Descargando agente..."
-curl -fLsS https://download.agent.dev.azure.com/agent/4.270.0/vsts-agent-linux-x64-4.270.0.tar.gz -o agent.tar.gz
-
-tar -xzvf agent.tar.gz
-
+# Si no existe el archivo .agent, significa que no se ha configurado para este contenedor
 if [ ! -f .agent ]; then
-  echo "Configurando agente..."
+  echo "Configurando agente por primera vez..."
 
   ./config.sh --unattended \
     --agent "$(hostname)" \
@@ -33,7 +29,7 @@ if [ ! -f .agent ]; then
     --work "_work" \
     --replace
 else
-  echo "Agente ya configurado, iniciando..."
+  echo "El agente ya está configurado. Omitiendo configuración..."
 fi
 
 echo "Iniciando agente..."
