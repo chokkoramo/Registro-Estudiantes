@@ -47,6 +47,6 @@ steps:
     inputs:
       workingDirectory: '$(projectDir)'
       gradleWrapperFile: '$(projectDir)/gradlew'
-      tasks: 'sonar'
+      tasks: 'build sonar'
     env:
       SONAR_TOKEN: $(SONAR_TOKEN)
