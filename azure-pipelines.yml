@@ -7,48 +7,82 @@ pool:
 variables:
   projectDir: '.'
 
-steps:
-  - checkout: self
-    displayName: "Clonar repositorio"
-    clean: true
-    fetchDepth: 0
+stages:
+  - stage: Build
+    displayName: "Build & Tests"
+    jobs:
+      - job: BuildJob
+        steps:
+          - checkout: self
+            clean: true
+            fetchDepth: 0
 
-  - script: java -version
-    displayName: "Verificar versión de Java"
+          - script: java -version
+            displayName: "Verificar versión de Java"
 
-  - task: Gradle@3
-    displayName: 'Compilación y pruebas unitarias'
-    inputs:
-      workingDirectory: '$(projectDir)'
-      gradleWrapperFile: '$(projectDir)/gradlew'
-      gradleOptions: '-Dfile.encoding=UTF-8 -Xmx3072m'
-      tasks: 'clean build test'
-      publishJUnitResults: true
-      testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+          - task: Gradle@3
+            displayName: 'Compilación + Unit Tests'
+            inputs:
+              workingDirectory: '$(projectDir)'
+              gradleWrapperFile: '$(projectDir)/gradlew'
+              gradleOptions: '-Dfile.encoding=UTF-8 -Xmx3072m'
+              tasks: 'clean build test'
+              publishJUnitResults: true
+              testResultsFiles: '**/build/test-results/test/TEST-*.xml'
 
-  - task: Gradle@3
-    displayName: 'Pruebas de aceptación (Cucumber)'
-    inputs:
-      workingDirectory: '$(projectDir)'
-      gradleWrapperFile: '$(projectDir)/gradlew'
-      tasks: 'acceptanceTest'
-      publishJUnitResults: true
-      testResultsFiles: '**/build/test-results/acceptanceTest/TEST-*.xml'
+          - task: Gradle@3
+            displayName: 'Cucumber Tests'
+            inputs:
+              workingDirectory: '$(projectDir)'
+              gradleWrapperFile: '$(projectDir)/gradlew'
+              tasks: 'acceptanceTest'
+              publishJUnitResults: true
+              testResultsFiles: '**/build/test-results/acceptanceTest/TEST-*.xml'
 
-  - task: Gradle@3
-    displayName: 'Pruebas de mutación (Pitest)'
-    inputs:
-      workingDirectory: '$(projectDir)'
-      gradleWrapperFile: '$(projectDir)/gradlew'
-      tasks: 'pitest'
+          - task: Gradle@3
+            displayName: 'Mutation Tests (Pitest)'
+            inputs:
+              workingDirectory: '$(projectDir)'
+              gradleWrapperFile: '$(projectDir)/gradlew'
+              tasks: 'pitest'
 
-  - task: Gradle@3
-    displayName: 'Publicar artefacto en Azure Artifacts'
+
+  - stage: Package
+    displayName: "Generate Artifact"
+    dependsOn: Build
     condition: succeeded()
-    inputs:
-      workingDirectory: '$(projectDir)'
-      gradleWrapperFile: '$(projectDir)/gradlew'
-      tasks: 'clean build publish'
-    env:
-      username: 'ArtifactFeed'
-      TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
+    jobs:
+      - job: PackageJob
+        steps:
+          - checkout: self
+
+          - task: Gradle@3
+            displayName: 'Generar JAR'
+            inputs:
+              workingDirectory: '$(projectDir)'
+              gradleWrapperFile: '$(projectDir)/gradlew'
+              tasks: 'bootJar'
+
+          - publish: $(projectDir)/build/libs
+            artifact: drop
+
+
+  - stage: Publish
+    displayName: "Publish to Artifact Feed"
+    dependsOn: Package
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    jobs:
+      - job: PublishJob
+        steps:
+          - download: current
+            artifact: drop
+
+          - task: Gradle@3
+            displayName: 'Publicar en Azure Artifacts'
+            inputs:
+              workingDirectory: '$(projectDir)'
+              gradleWrapperFile: '$(projectDir)/gradlew'
+              tasks: 'publish'
+            env:
+              username: 'ArtifactFeed'
+              TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
