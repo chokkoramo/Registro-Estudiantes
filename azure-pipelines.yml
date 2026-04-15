@@ -51,4 +51,4 @@ steps:
       tasks: 'publish'
     env:
       ORG_GRADLE_PROJECT_ARTIFACT_USER: 'ArtifactFeed'
-      ORG_GRADLE_PROJECT_ARTIFACT_PASSWORD: $(System.AccessToken)
+      ORG_GRADLE_PROJECT_ARTIFACT_PASSWORD: $(TOKEN_ARTIFACT_FEED)
