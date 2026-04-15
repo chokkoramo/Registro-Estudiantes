@@ -48,7 +48,7 @@ steps:
     inputs:
       workingDirectory: '$(projectDir)'
       gradleWrapperFile: '$(projectDir)/gradlew'
-      tasks: 'publish'
+      tasks: 'clean build publish'
     env:
-      ORG_GRADLE_PROJECT_ARTIFACT_USER: 'ArtifactFeed'
-      ORG_GRADLE_PROJECT_ARTIFACT_PASSWORD: $(TOKEN_ARTIFACT_FEED)
+      username: 'ArtifactFeed'
+      TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
