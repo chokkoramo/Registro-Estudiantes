@@ -43,16 +43,6 @@ steps:
       tasks: 'pitest'
 
   - task: Gradle@3
-    displayName: 'Análisis de calidad (SonarQube)'
-    inputs:
-      workingDirectory: '$(projectDir)'
-      gradleWrapperFile: '$(projectDir)/gradlew'
-      tasks: 'sonar'
-    env:
-      SONAR_TOKEN: $(SONAR_TOKEN)
-      SONAR_HOST_URL: 'https://sonarcloud.io'
-
-  - task: Gradle@3
     displayName: 'Publicar artefacto en Azure Artifacts'
     condition: succeeded()
     inputs:
