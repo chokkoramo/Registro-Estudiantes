@@ -60,5 +60,5 @@ steps:
       gradleWrapperFile: '$(projectDir)/gradlew'
       tasks: 'publish'
     env:
-      ArtifactFeedUsername: 'Chokkoramo'
-      ORG_GRADLE_PROJECT_ArtifactFeedPassword: $(SECRET_TOKEN)
+      ARTIFACT_USER: 'ArtifactFeed'
+      ARTIFACT_PASSWORD: $(TOKEN_ARTIFACT_FEED)

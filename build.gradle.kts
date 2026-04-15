@@ -72,19 +72,28 @@ sonar {
 }
 
 publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+        }
+    }
     repositories {
         maven {
-            name = "Chokkoramo"
             url = uri("https://pkgs.dev.azure.com/Chokkoramo/d02376a2-5ba5-4351-9537-67bc863f5059/_packaging/ArtifactFeed/maven/v1")
+            name = "ArtifactFeed"
             credentials {
-                username = project.findProperty("CHOKKORAMO_USER").toString()
-                password = project.findProperty("CHOKKORAMO_PASSWORD").toString()
+                username = project.findProperty("ARTIFACT_USER")?.toString()
+                password = project.findProperty("ARTIFACT_PASSWORD")?.toString()
             }
             authentication {
                 create<BasicAuthentication>("basic")
             }
         }
     }
+}
+
+tasks.withType<GenerateModuleMetadata> {
+    suppressedValidationErrors.add("dependencies-without-versions")
 }
 
 tasks.withType<Test> {
