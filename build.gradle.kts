@@ -75,7 +75,7 @@ publishing {
     repositories {
         maven {
             name = "Chokkoramo"
-            url = uri("https://pkgs.dev.azure.com/Chokkoramo/_packaging/Chokkoramo/maven/v1")
+            url = uri("https://pkgs.dev.azure.com/Chokkoramo/d02376a2-5ba5-4351-9537-67bc863f5059/_packaging/ArtifactFeed/maven/v1")
             credentials {
                 username = project.findProperty("CHOKKORAMO_USER").toString()
                 password = project.findProperty("CHOKKORAMO_PASSWORD").toString()

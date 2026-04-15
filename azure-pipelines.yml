@@ -51,3 +51,14 @@ steps:
     env:
       SONAR_TOKEN: $(SONAR_TOKEN)
       SONAR_HOST_URL: 'http://sonarqube:9000'
+
+  - task: Gradle@3
+    displayName: 'Publicar artefacto en Azure Artifacts'
+    condition: succeeded()
+    inputs:
+      workingDirectory: '$(projectDir)'
+      gradleWrapperFile: '$(projectDir)/gradlew'
+      tasks: 'publish'
+    env:
+      ArtifactFeedUsername: 'Chokkoramo'
+      ORG_GRADLE_PROJECT_ArtifactFeedPassword: $(SECRET_TOKEN)
