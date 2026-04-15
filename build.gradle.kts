@@ -4,6 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     id("org.sonarqube") version "7.1.0.6387"
     id("info.solidsoft.pitest") version "1.19.0-rc.3"
+    id("maven-publish")
 }
 
 group = "juanca"
@@ -44,7 +45,6 @@ dependencies {
     testImplementation("io.cucumber:cucumber-junit-platform-engine:7.18.0")
     testImplementation("org.junit.platform:junit-platform-suite:1.10.0")
 
-
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     pitest("org.pitest:pitest-junit5-plugin:1.2.1")
@@ -71,6 +71,22 @@ sonar {
     }
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "Chokkoramo"
+            url = uri("https://pkgs.dev.azure.com/Chokkoramo/_packaging/Chokkoramo/maven/v1")
+            credentials {
+                username = project.findProperty("CHOKKORAMO_USER").toString()
+                password = project.findProperty("CHOKKORAMO_PASSWORD").toString()
+            }
+            authentication {
+                create<BasicAuthentication>("basic")
+            }
+        }
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
     systemProperty("file.encoding", "UTF-8")
@@ -80,8 +96,6 @@ tasks.register<Test>("acceptanceTest") {
     useJUnitPlatform()
     description = "Runs Cucumber acceptance tests."
     group = "verification"
-
-    useJUnitPlatform()
 
     testClassesDirs = sourceSets["test"].output.classesDirs
     classpath = sourceSets["test"].runtimeClasspath
