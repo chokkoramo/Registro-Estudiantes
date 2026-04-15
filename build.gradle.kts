@@ -84,9 +84,6 @@ publishing {
                 username = "ArtifactFeed"
                 password = System.getenv("TOKEN_ARTIFACT_FEED")
             }
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
         }
     }
 }
