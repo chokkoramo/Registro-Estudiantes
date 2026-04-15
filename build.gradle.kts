@@ -78,11 +78,11 @@ publishing {
     }
     repositories {
         maven {
-            url = uri("https://pkgs.dev.azure.com/Chokkoramo/d02376a2-5ba5-4351-9537-67bc863f5059/_packaging/ArtifactFeed/maven/v1")
             name = "ArtifactFeed"
+            url = uri("https://pkgs.dev.azure.com/Chokkoramo/d02376a2-5ba5-4351-9537-67bc863f5059/_packaging/ArtifactFeed/maven/v1")
             credentials {
                 username = "ArtifactFeed"
-                password = project.findProperty("TOKEN_ARTIFACT_FEED")?.toString()
+                password = System.getenv("TOKEN_ARTIFACT_FEED")
             }
             authentication {
                 create<BasicAuthentication>("basic")
