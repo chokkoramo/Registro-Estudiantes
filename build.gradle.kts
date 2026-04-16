@@ -5,6 +5,7 @@ plugins {
     id("org.sonarqube") version "7.2.3.7755"
     id("info.solidsoft.pitest") version "1.19.0-rc.3"
     id("maven-publish")
+    id("jacoco")
 }
 
 group = "juanca"
@@ -62,11 +63,54 @@ pitest {
     timestampedReports.set(false)
 }
 
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    systemProperty("file.encoding", "UTF-8")
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.register<Test>("acceptanceTest") {
+    useJUnitPlatform()
+    description = "Runs Cucumber acceptance tests."
+    group = "verification"
+
+    testClassesDirs = sourceSets["test"].output.classesDirs
+    classpath = sourceSets["test"].runtimeClasspath
+
+    systemProperty("cucumber.plugin", "pretty")
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test, tasks.named("acceptanceTest"))
+
+    executionData(
+        fileTree(buildDir).include(
+            "jacoco/test.exec",
+            "jacoco/acceptanceTest.exec"
+        )
+    )
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
 sonar {
     properties {
         property("sonar.projectKey", "chokkoramo_Registro-Estudiantes")
         property("sonar.organization", "chokkoramo")
+        property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN"))
+
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        )
     }
 }
 
@@ -90,20 +134,4 @@ publishing {
 
 tasks.withType<GenerateModuleMetadata> {
     suppressedValidationErrors.add("dependencies-without-versions")
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-    systemProperty("file.encoding", "UTF-8")
-}
-
-tasks.register<Test>("acceptanceTest") {
-    useJUnitPlatform()
-    description = "Runs Cucumber acceptance tests."
-    group = "verification"
-
-    testClassesDirs = sourceSets["test"].output.classesDirs
-    classpath = sourceSets["test"].runtimeClasspath
-
-    systemProperty("cucumber.plugin", "pretty")
 }
