@@ -42,9 +42,9 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
-    testImplementation("io.cucumber:cucumber-java:7.18.0")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:7.18.0")
-    testImplementation("org.junit.platform:junit-platform-suite:1.10.0")
+    testImplementation(libs.cucumber.java)
+    testImplementation(libs.cucumber.junit)
+    testImplementation(libs.junit.plataform)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
@@ -88,7 +88,7 @@ tasks.jacocoTestReport {
     dependsOn(tasks.test, tasks.named("acceptanceTest"))
 
     executionData(
-        fileTree(buildDir).include(
+        fileTree().include(
             "jacoco/test.exec",
             "jacoco/acceptanceTest.exec"
         )
@@ -109,7 +109,7 @@ sonar {
 
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
-            "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+            "${project}/reports/jacoco/test/jacocoTestReport.xml"
         )
     }
 }
