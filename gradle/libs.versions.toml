@@ -1,8 +1,12 @@
 [versions]
 cucumber = "7.18.0"
 junit-platform = "1.10.0"
+mockito = "5.+"
+byte-buddy = "1.17.8"
 
 [libraries]
 cucumber-java={module = "io.cucumber:cucumber-java", version.ref="cucumber"}
 cucumber-junit={module = "io.cucumber:cucumber-junit-platform-engine", version.ref="cucumber"}
-junit-plataform ={module= "org.junit.platform:junit-platform-suite", version.ref="junit-platform"}
+junit-plataform={module= "org.junit.platform:junit-platform-suite", version.ref="junit-platform"}
+mockito-core={module= "org.mockito:mockito-core", version.ref="mockito"}
+bytebuddy={module= "net.bytebuddy:byte-buddy-agent", version.ref="byte-buddy"}

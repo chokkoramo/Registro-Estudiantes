@@ -10,6 +10,6 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 @SelectClasspathResource("features")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "steps")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty")
-public class RunCucumberTest {
 
-}
+@SuppressWarnings("java:S2187")
+public class RunCucumberTest {}

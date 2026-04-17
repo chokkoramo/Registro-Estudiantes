@@ -45,6 +45,8 @@ dependencies {
     testImplementation(libs.cucumber.java)
     testImplementation(libs.cucumber.junit)
     testImplementation(libs.junit.plataform)
+    testImplementation(libs.mockito.core)
+    testRuntimeOnly(libs.bytebuddy)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
@@ -69,6 +71,12 @@ jacoco {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    jvmArgs(
+        "-javaagent:${configurations.testRuntimeClasspath.get()
+            .find { it.name.contains("byte-buddy-agent") }?.absolutePath}"
+    )
+
     systemProperty("file.encoding", "UTF-8")
     finalizedBy(tasks.jacocoTestReport)
 }
@@ -87,16 +95,19 @@ tasks.register<Test>("acceptanceTest") {
 tasks.jacocoTestReport {
     dependsOn(tasks.test, tasks.named("acceptanceTest"))
 
-    executionData(
-        fileTree().include(
-            "jacoco/test.exec",
-            "jacoco/acceptanceTest.exec"
-        )
+    executionData.setFrom(
+        layout.buildDirectory.asFileTree.matching {
+            include("jacoco/test.exec", "jacoco/acceptanceTest.exec")
+        }
     )
 
     reports {
         xml.required.set(true)
         html.required.set(true)
+    }
+
+    onlyIf {
+        executionData.files.any { it.exists() }
     }
 }
 
@@ -111,6 +122,7 @@ sonar {
             "sonar.coverage.jacoco.xmlReportPaths",
             "${project}/reports/jacoco/test/jacocoTestReport.xml"
         )
+        property("sonar.pitest.reportsDirectory", "build/reports/pitest")
     }
 }
 
