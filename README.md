@@ -21,7 +21,7 @@ API REST desarrollada con **Java 21** y **Spring Boot**, orientada a la gestión
 El sistema permite:
 
 - Registrar estudiantes  
-- Asignar notas  
+- Asignar varias notas al mismo tiempo 
 - Calcular el promedio académico  
 - Generar ranking de estudiantes  
 - Consultar estudiantes registrados  
@@ -36,7 +36,8 @@ Actualmente, la información se maneja **en memoria** (sin base de datos).
 - Spring Boot  
 - Gradle (Kotlin DSL)  
 - Docker  
-- Azure DevOps  
+- Azure DevOps
+- Grafana / Influx
 
 ---
 
@@ -49,7 +50,8 @@ El proyecto cuenta con un pipeline configurado en **Azure DevOps**, el cual se e
 - Compilación del proyecto  
 - Ejecución de pruebas unitarias  
 - Análisis de calidad de código  
-- Pruebas de mutación  
+- Pruebas de mutación
+- Pruebas de Estres
 - Generación de reportes  
 
 ---
@@ -70,13 +72,17 @@ Integración con herramientas de análisis estático como SonarQube.
 ### ✔️ Pruebas de mutación
 Uso de herramientas como PIT (Pitest) para evaluar la robustez de las pruebas.
 
+### ✔️ Pruebas de Estres
+Se usa un plan de pruebas de JMeter para evaluar los tiempos de respuesta, numero de usuarios activos y la tasa de error en las consultas
+
 ---
 
 ## 🐳 Uso de Docker
 
 Se utiliza Docker para:
 
-- Ejecutar el agente de Azure DevOps  
+- Ejecutar el agente de Azure DevOps
+- Ejecutar Grafana / influxDB  
 - Garantizar entornos reproducibles  
 - Facilitar la integración continua  
 
