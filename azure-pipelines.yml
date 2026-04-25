@@ -28,7 +28,7 @@ stages:
               gradleOptions: '-Dfile.encoding=UTF-8 -Xmx3072m'
               tasks: 'clean build test'
               publishJUnitResults: true
-              testResultsFiles: '**/build/test-results/test/TEST-*.xml'
+              testResultsFiles: '**/TEST-*.xml'
 
           - task: Gradle@3
             displayName: 'Cucumber Tests'
@@ -37,7 +37,7 @@ stages:
               gradleWrapperFile: '$(projectDir)/gradlew'
               tasks: 'acceptanceTest'
               publishJUnitResults: true
-              testResultsFiles: '**/build/test-results/acceptanceTest/TEST-*.xml'
+              testResultsFiles: '**/TEST-*.xml'
 
           - task: Gradle@3
             displayName: 'Mutation Tests (Pitest)'
@@ -52,36 +52,36 @@ stages:
     condition: succeeded()
     jobs:
       - job: JMeterJob
-        pool:
-          name: Default
-
         steps:
           - checkout: self
 
           - script: |
               echo "Levantando API..."
-              nohup ./gradlew bootRun &
-              sleep 25
+              nohup ./gradlew bootRun > app.log 2>&1 &
+              sleep 30
             displayName: "Run Spring Boot App"
+
+          - script: |
+              echo "Esperando API..."
+              for i in {1..10}; do
+                curl -f http://localhost:8080/estudiantes && break
+                echo "Reintentando..."
+                sleep 5
+              done
+            displayName: "Health Check API"
 
           - script: |
               mkdir -p results/html
             displayName: "Preparar carpetas"
 
           - script: |
-              echo "Descargando JMeter..."
-              curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.zip -o jmeter.zip
-              unzip -q jmeter.zip
-            displayName: "Instalar JMeter"
-
-          - script: |
-              echo "Ejecutando prueba..."
-              ./apache-jmeter-5.6.3/bin/jmeter -n \
-                -t test/stress_test_Registroestudiantes.jmx \
+              echo "Ejecutando prueba con JMeter instalado..."
+              jmeter -n \
+                -t tests/stress_test_Registroestudiantes.jmx \
                 -l results/results.jtl
 
               echo "Generando reporte..."
-              ./apache-jmeter-5.6.3/bin/jmeter \
+              jmeter \
                 -g results/results.jtl \
                 -o results/html
             displayName: "Run JMeter"
@@ -92,7 +92,6 @@ stages:
               artifactName: 'jmeter-report'
               publishLocation: 'Container'
             displayName: "Publicar reporte"
-
 
   - stage: Package
     displayName: "Generate Artifact"
@@ -112,7 +111,6 @@ stages:
 
           - publish: $(projectDir)/build/libs
             artifact: drop
-
 
   - stage: Publish
     displayName: "Publish to Artifact Feed"
