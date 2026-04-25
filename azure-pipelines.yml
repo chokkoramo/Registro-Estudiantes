@@ -71,19 +71,19 @@ stages:
             displayName: "Health Check API"
 
           - script: |
-              mkdir -p results/html
+              mkdir -p src/test/results/html
             displayName: "Preparar carpetas"
 
           - script: |
               echo "Ejecutando prueba con JMeter instalado..."
               jmeter -n \
-                -t tests/stress_test_Registroestudiantes.jmx \
-                -l results/results.jtl
+                -t src/test/stress_test_Registroestudiantes.jmx \
+                -l src/test/results/results.jtl
 
               echo "Generando reporte..."
               jmeter \
-                -g results/results.jtl \
-                -o results/html
+                -g src/test/results/results.jtl \
+                -o src/test/results/html
             displayName: "Run JMeter"
 
           - task: PublishBuildArtifacts@1
