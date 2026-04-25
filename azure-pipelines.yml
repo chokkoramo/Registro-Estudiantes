@@ -88,7 +88,7 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: 'results/html'
+              pathToPublish: 'src/test/results/html'
               artifactName: 'jmeter-report'
               publishLocation: 'Container'
             displayName: "Publicar reporte"
