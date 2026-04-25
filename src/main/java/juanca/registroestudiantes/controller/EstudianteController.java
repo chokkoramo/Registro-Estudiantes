@@ -37,10 +37,12 @@ public class EstudianteController {
     }
 
     @PostMapping("/{id}/notas")
-    public String asignarNota(@PathVariable Long id,
-                              @RequestBody NotaDTO dto){
-        sistema.asignarNota(id, dto.getNota());
-        return "Se asigno " + dto.getNota();
+    public String asignarNotas(@PathVariable Long id,
+                               @RequestBody List<NotaDTO> notas){
+
+        notas.forEach(n -> sistema.asignarNota(id, n.getNota()));
+
+        return "Se asignaron " + notas.size() + " notas";
     }
 
     @GetMapping("/{id}/promedio")

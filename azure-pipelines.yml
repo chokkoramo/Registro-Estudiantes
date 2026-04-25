@@ -46,10 +46,57 @@ stages:
               gradleWrapperFile: '$(projectDir)/gradlew'
               tasks: 'pitest'
 
+  - stage: PerformanceTest
+    displayName: "Performance Tests (JMeter)"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: JMeterJob
+        pool:
+          name: Default
+
+        steps:
+          - checkout: self
+
+          - script: |
+              echo "Levantando API..."
+              nohup ./gradlew bootRun &
+              sleep 25
+            displayName: "Run Spring Boot App"
+
+          - script: |
+              mkdir -p results/html
+            displayName: "Preparar carpetas"
+
+          - script: |
+              echo "Descargando JMeter..."
+              curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.zip -o jmeter.zip
+              unzip -q jmeter.zip
+            displayName: "Instalar JMeter"
+
+          - script: |
+              echo "Ejecutando prueba..."
+              ./apache-jmeter-5.6.3/bin/jmeter -n \
+                -t test/stress_test_Registroestudiantes.jmx \
+                -l results/results.jtl
+
+              echo "Generando reporte..."
+              ./apache-jmeter-5.6.3/bin/jmeter \
+                -g results/results.jtl \
+                -o results/html
+            displayName: "Run JMeter"
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: 'results/html'
+              artifactName: 'jmeter-report'
+              publishLocation: 'Container'
+            displayName: "Publicar reporte"
+
 
   - stage: Package
     displayName: "Generate Artifact"
-    dependsOn: Build
+    dependsOn: PerformanceTest
     condition: succeeded()
     jobs:
       - job: PackageJob
