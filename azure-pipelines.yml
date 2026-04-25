@@ -17,6 +17,17 @@ stages:
             clean: true
             fetchDepth: 0
 
+          - script: mkdir -p $(HOME)/.gradle
+            displayName: "Crear carpeta Gradle"
+
+          - task: Cache@2
+            inputs:
+              key: 'gradle | "$(Agent.OS)" | **/gradle-wrapper.properties'
+              restoreKeys: |
+                gradle | "$(Agent.OS)"
+              path: $(HOME)/.gradle
+            displayName: "Cache Gradle"
+
           - script: java -version
             displayName: "Verificar versión de Java"
 

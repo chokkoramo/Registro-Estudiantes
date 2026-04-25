@@ -1,0 +1,37 @@
+services:
+
+  agente-azure:
+    build: ./agente-azure
+    container_name: agente-devops-01
+    env_file:
+      - .env
+    depends_on:
+      - influxdb
+    networks:
+      - jmeter-net
+
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb-jmeter
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=jmeter
+    networks:
+      - jmeter-net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana-jmeter
+    ports:
+      - "3000:3000"
+    depends_on:
+      - influxdb
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - jmeter-net
+
+networks:
+  jmeter-net:

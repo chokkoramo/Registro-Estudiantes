@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-# Instalamos dependencias
+# DEPENDENCIAS
 RUN apt-get update && apt-get install -y \
     curl \
     git \
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     maven \
     && rm -rf /var/lib/apt/lists/*
 
-# INSTALAR JMETER
+# JMETER
 RUN curl -L https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.3.tgz -o jmeter.tgz && \
     tar -xzf jmeter.tgz && \
     mv apache-jmeter-5.6.3 /opt/jmeter && \
@@ -30,14 +30,13 @@ RUN ARCH=$(uname -m) && \
       AGENT_URL="https://download.agent.dev.azure.com/agent/4.270.0/vsts-agent-linux-x64-4.270.0.tar.gz"; \
     fi && \
     curl -fLsS "$AGENT_URL" -o agent.tar.gz && \
-    tar -xzvf agent.tar.gz && \
+    tar -xzf agent.tar.gz && \
     rm agent.tar.gz
 
 RUN ./bin/installdependencies.sh
 
 COPY start.sh .
 RUN chmod +x start.sh
-
 RUN chown -R agentuser:agentuser /azp
 
 USER agentuser

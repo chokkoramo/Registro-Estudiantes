@@ -1,6 +1,0 @@
-services:
-  agente-azure:
-    image: agente-azure:latest
-    container_name: agente-devops-01
-    env_file:
-      - ../.env
