@@ -7,12 +7,15 @@ import juanca.registroestudiantes.model.SistemaAcademico;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -77,17 +80,51 @@ class EstudianteControllerTest {
     }
 
     @Test
-    @DisplayName("POST /estudiantes/{id}/notas - Debe asignar nota correctamente")
+    @DisplayName("POST /estudiantes/{id}/notas - Debe asignar una nota correctamente")
     void testAsiganrNotaOk() throws Exception {
-        NotaDTO nota = new NotaDTO(4.6);
+        List<NotaDTO> notas = List.of(
+                new NotaDTO(4.6)
+        );
 
         mockMvc.perform(post("/estudiantes/1/notas")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(nota)))
-                .andExpect((status().isOk()))
-                .andExpect(content().string("Se asigno 4.6"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(notas)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Se asignaron 1 notas"));
+
+        verify(sistemaMock, times(1)).asignarNota(1L, 4.6);
+
+        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
+        verify(sistemaMock, times(1)).asignarNota(eq(1L), captor.capture());
+        assertEquals(4.6, captor.getValue());
+    }
+
+    @Test
+    @DisplayName("POST /estudiantes/{id}/notas - Debe asignar varias notas correctamente")
+    void testAsiganrMultiplesNotasOk() throws Exception {
+        List<NotaDTO> notas = List.of(
+                new NotaDTO(4.6),
+                new NotaDTO(2.7),
+                new NotaDTO(1.5)
+        );
+
+        mockMvc.perform(post("/estudiantes/1/notas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(notas)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Se asignaron 3 notas"));
+
+        verify(sistemaMock, times(3)).asignarNota(eq(1L), anyDouble());
 
         verify(sistemaMock).asignarNota(1L, 4.6);
+        verify(sistemaMock).asignarNota(1L, 2.7);
+        verify(sistemaMock).asignarNota(1L, 1.5);
+
+        ArgumentCaptor<Double> captor = ArgumentCaptor.forClass(Double.class);
+        verify(sistemaMock, times(3)).asignarNota(eq(1L), captor.capture());
+
+        List<Double> notasCapturadas = captor.getAllValues();
+        assertTrue(notasCapturadas.containsAll(List.of(4.6, 2.7, 1.5)));
     }
 
     @Test
