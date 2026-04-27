@@ -18,14 +18,14 @@ java {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
     }
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
@@ -46,8 +46,8 @@ dependencies {
     testImplementation(libs.cucumber.junit)
     testImplementation(libs.junit.plataform)
     testImplementation(libs.mockito.core)
-    testRuntimeOnly(libs.bytebuddy)
 
+    testRuntimeOnly(libs.bytebuddy)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     pitest("org.pitest:pitest-junit5-plugin:1.2.1")
@@ -78,6 +78,7 @@ tasks.withType<Test> {
     )
 
     systemProperty("file.encoding", "UTF-8")
+
     finalizedBy(tasks.jacocoTestReport)
 }
 
@@ -90,6 +91,10 @@ tasks.register<Test>("acceptanceTest") {
     classpath = sourceSets["test"].runtimeClasspath
 
     systemProperty("cucumber.plugin", "pretty")
+
+    extensions.configure<JacocoTaskExtension> {
+        isEnabled = true
+    }
 }
 
 tasks.jacocoTestReport {
@@ -97,17 +102,14 @@ tasks.jacocoTestReport {
 
     executionData.setFrom(
         layout.buildDirectory.asFileTree.matching {
-            include("jacoco/test.exec", "jacoco/acceptanceTest.exec")
+            include("jacoco/*.exec")
         }
     )
 
     reports {
         xml.required.set(true)
         html.required.set(true)
-    }
-
-    onlyIf {
-        executionData.files.any { it.exists() }
+        csv.required.set(false)
     }
 }
 
@@ -120,8 +122,9 @@ sonar {
 
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
-            "${project}/reports/jacoco/test/jacocoTestReport.xml"
+            "build/reports/jacoco/test/jacocoTestReport.xml"
         )
+
         property("sonar.pitest.reportsDirectory", "build/reports/pitest")
     }
 }
