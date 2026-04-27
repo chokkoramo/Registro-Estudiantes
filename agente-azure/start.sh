@@ -13,24 +13,31 @@ fi
 
 AZP_POOL=${AZP_POOL:-Default}
 
-# Nos aseguramos de estar en el directorio correcto
 cd /azp
 
-# Si no existe el archivo .agent, significa que no se ha configurado para este contenedor
-if [ ! -f .agent ]; then
-  echo "Configurando agente por primera vez..."
+echo "Limpiando configuración previa del agente..."
 
-  ./config.sh --unattended \
-    --agent "$(hostname)" \
-    --url "$AZP_URL" \
-    --auth pat \
-    --token "$AZP_TOKEN" \
-    --pool "$AZP_POOL" \
-    --work "_work" \
-    --replace
-else
-  echo "El agente ya está configurado. Omitiendo configuración..."
+if [ -f .agent ]; then
+  ./config.sh remove --unattended --auth pat --token "$AZP_TOKEN" || true
 fi
 
+# Limpia cache de tasks
+rm -rf _work/_tasks || true
+rm -rf _work/_tool || true
+
+echo "Configurando agente..."
+
+./config.sh --unattended \
+  --agent "$(hostname)" \
+  --url "$AZP_URL" \
+  --auth pat \
+  --token "$AZP_TOKEN" \
+  --pool "$AZP_POOL" \
+  --work "_work" \
+  --replace
+
 echo "Iniciando agente..."
+
+export VSO_AGENT_IGNORE=AZP_TOKEN
+
 ./run.sh
