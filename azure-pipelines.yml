@@ -59,7 +59,7 @@ stages:
 
           - script: |
               nohup ./gradlew bootRun > app.log 2>&1 &
-              sleep 30
+              sleep 10
             displayName: "Levantar API"
 
           - script: |
@@ -75,12 +75,14 @@ stages:
           # Ejecución de prueba de carga y generación de reporte
           - script: |
               jmeter -n \
-                -t src/test/stress_test_Registroestudiantes.jmx \
-                -l src/test/results/results.jtl
-
+              -t src/test/stress_test_Registroestudiantes.jmx \
+              -l src/test/results/results.jtl \
+              -j src/test/results/jmeter.log \
+              -Jlog_level.jmeter=ERROR
+              
               jmeter \
-                -g src/test/results/results.jtl \
-                -o src/test/results/html
+              -g src/test/results/results.jtl \
+              -o src/test/results/html
             displayName: "Ejecutar JMeter"
 
           # Publicación del reporte generado
