@@ -22,15 +22,6 @@ stages:
           - script: mkdir -p $(HOME)/.gradle
             displayName: "Inicializar entorno Gradle"
 
-          - task: Cache@2
-            inputs:
-              key: 'gradle | "$(Agent.OS)" | **/gradle-wrapper.properties'
-              restoreKeys: |
-                gradle | "$(Agent.OS)"
-              path: |
-                $(HOME)/.gradle/caches
-                $(HOME)/.gradle/wrapper
-
           # Validación de entorno Java
           - script: java -version
             displayName: "Verificar Java"
