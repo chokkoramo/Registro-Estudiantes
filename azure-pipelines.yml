@@ -22,10 +22,6 @@ stages:
           - script: mkdir -p $(HOME)/.gradle
             displayName: "Inicializar entorno Gradle"
 
-          # Validación de entorno Java
-          - script: java -version
-            displayName: "Verificar Java"
-
           # Compilación, pruebas unitarias, pruebas de aceptación, cobertura y análisis de SonarCloud
           - task: Gradle@3
             displayName: 'Build + Tests + Coverage + Sonar'
