@@ -9,9 +9,9 @@ variables:
 
 stages:
 
-  # BUILD + COVERAGE
+  # Build: compila, ejecuta pruebas y realiza análisis de SonarCloud
   - stage: Build
-    displayName: "Build & Tests"
+    displayName: "Build, Tests & Sonar"
     jobs:
       - job: BuildJob
         steps:
@@ -20,7 +20,7 @@ stages:
             fetchDepth: 0
 
           - script: mkdir -p $(HOME)/.gradle
-            displayName: "Crear carpeta Gradle"
+            displayName: "Inicializar entorno Gradle"
 
           - task: Cache@2
             inputs:
@@ -28,13 +28,26 @@ stages:
               restoreKeys: |
                 gradle | "$(Agent.OS)"
               path: $(HOME)/.gradle
-            displayName: "Cache Gradle"
 
+          # Validación de entorno Java
           - script: java -version
-            displayName: "Verificar versión de Java"
+            displayName: "Verificar Java"
 
+          # Configuración de SonarCloud antes del build
+          - task: SonarCloudPrepare@1
+            inputs:
+              SonarCloud: 'SonarCloudConnection'  # Service Connection configurado en Azure
+              organization: 'chokkoramo'
+              scannerMode: 'Other'
+              configMode: 'manual'
+              cliProjectKey: 'chokkoramo_Registro-Estudiantes'
+              cliProjectName: 'RegistroEstudiantes'
+              extraProperties: |
+                sonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
+
+          # Compilación, pruebas unitarias, pruebas de aceptación y generación de cobertura
           - task: Gradle@3
-            displayName: 'Unit + Cucumber + JaCoCo'
+            displayName: 'Build + Tests + Coverage'
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
@@ -43,38 +56,20 @@ stages:
               publishJUnitResults: true
               testResultsFiles: '**/TEST-*.xml'
 
+          # Ejecución del análisis en SonarCloud
+          - task: SonarCloudAnalyze@1
 
-  # SONAR + QUALITY GATE
-  - stage: Sonar
-    displayName: "SonarCloud Analysis"
-    dependsOn: Build
-    condition: succeeded()
-    jobs:
-      - job: SonarJob
-        steps:
-          - checkout: self
-            fetchDepth: 0
-
-          - task: Gradle@3
-            displayName: 'Run Sonar Analysis'
-            inputs:
-              workingDirectory: '$(projectDir)'
-              gradleWrapperFile: '$(projectDir)/gradlew'
-              gradleOptions: '-Dfile.encoding=UTF-8 -Xmx3072m'
-              tasks: 'sonar'
-            env:
-              SONAR_TOKEN: $(SONAR_TOKEN)
-
+          # Espera el resultado del Quality Gate y falla el pipeline si no se cumple
           - task: SonarCloudPublish@1
             displayName: "Quality Gate"
             inputs:
               pollingTimeoutSec: '300'
 
 
-  # PERFORMANCE TEST
+  # Pruebas de rendimiento usando JMeter sobre la API levantada localmente
   - stage: PerformanceTest
-    displayName: "Performance Tests (JMeter)"
-    dependsOn: Sonar
+    displayName: "Performance Tests"
+    dependsOn: Build
     condition: succeeded()
     jobs:
       - job: JMeterJob
@@ -82,46 +77,42 @@ stages:
           - checkout: self
 
           - script: |
-              echo "Levantando API..."
               nohup ./gradlew bootRun > app.log 2>&1 &
               sleep 30
-            displayName: "Run Spring Boot App"
+            displayName: "Levantar API"
 
           - script: |
-              echo "Esperando API..."
               for i in {1..10}; do
                 curl -f http://localhost:8080/estudiantes && break
-                echo "Reintentando..."
                 sleep 5
               done
-            displayName: "Health Check API"
+            displayName: "Health Check"
 
+          # Preparación de directorio de resultados
           - script: mkdir -p src/test/results/html
-            displayName: "Preparar carpetas"
 
+          # Ejecución de prueba de carga y generación de reporte
           - script: |
-              echo "Ejecutando JMeter..."
               jmeter -n \
                 -t src/test/stress_test_Registroestudiantes.jmx \
                 -l src/test/results/results.jtl
-              
-              echo "Generando reporte..."
+
               jmeter \
                 -g src/test/results/results.jtl \
                 -o src/test/results/html
-            displayName: "Run JMeter"
+            displayName: "Ejecutar JMeter"
 
+          # Publicación del reporte generado
           - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: 'src/test/results/html'
               artifactName: 'jmeter-report'
               publishLocation: 'Container'
-            displayName: "Publicar reporte"
 
 
-  # PACKAGE
+  # Generación del artefacto ejecutable
   - stage: Package
-    displayName: "Generate Artifact"
+    displayName: "Package"
     dependsOn: PerformanceTest
     condition: succeeded()
     jobs:
@@ -140,9 +131,9 @@ stages:
             artifact: drop
 
 
-  # PUBLISH
+  # Publicación del artefacto en Azure Artifacts (solo en master)
   - stage: Publish
-    displayName: "Publish to Artifact Feed"
+    displayName: "Publish Artifact"
     dependsOn: Package
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
@@ -152,7 +143,7 @@ stages:
             artifact: drop
 
           - task: Gradle@3
-            displayName: 'Publicar en Azure Artifacts'
+            displayName: 'Publicar en Artifact Feed'
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
@@ -162,10 +153,10 @@ stages:
               TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
 
 
-  # PITEST (SOLO MASTER)
+  # Pruebas de mutación (costosas), se ejecutan solo en master
   - stage: MutationTest
-    displayName: "Mutation Testing (PIT)"
-    dependsOn: Sonar
+    displayName: "Mutation Testing"
+    dependsOn: Build
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
       - job: PitestJob
@@ -173,7 +164,7 @@ stages:
           - checkout: self
 
           - task: Gradle@3
-            displayName: 'Run PITEST'
+            displayName: 'Ejecutar PIT'
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
