@@ -27,7 +27,9 @@ stages:
               key: 'gradle | "$(Agent.OS)" | **/gradle-wrapper.properties'
               restoreKeys: |
                 gradle | "$(Agent.OS)"
-              path: $(HOME)/.gradle
+              path: |
+                $(HOME)/.gradle/caches
+                $(HOME)/.gradle/wrapper
 
           # Validación de entorno Java
           - script: java -version
