@@ -9,55 +9,55 @@ class SistemaAcademicoTest {
     @Test
     @DisplayName("Debe incrementar la id al registrar estudiantes")
     void testRegistrarIncrementoId(){
-        SistemaAcademico sa = new SistemaAcademico();
-        Estudiante e1 = sa.registrarEstudiante("Juan",  "Software");
-        Estudiante e2 = sa.registrarEstudiante("Jose",  "Software");
+        SistemaAcademico sistemaAcademico = new SistemaAcademico();
+        Estudiante eestudiante1 = sistemaAcademico.registrarEstudiante("Juan",  "Software");
+        Estudiante estudiante2 = sistemaAcademico.registrarEstudiante("Jose",  "Software");
 
-        assertEquals(1L, e1.getId());
-        assertEquals(2L, e2.getId());
+        assertEquals(1L, eestudiante1.getId());
+        assertEquals(2L, estudiante2.getId());
     }
 
     @Test
     void testNombreNull(){
-        SistemaAcademico sa = new SistemaAcademico();
-        assertThrows(IllegalArgumentException.class, () -> sa.registrarEstudiante(null,"Software"));
+        SistemaAcademico sistemaAcademico = new SistemaAcademico();
+        assertThrows(IllegalArgumentException.class, () -> sistemaAcademico.registrarEstudiante(null,"Software"));
     }
 
     @Test
     @DisplayName("Debe buscar ID existente")
     void testBuscarIdExistente(){
-        SistemaAcademico sa = new SistemaAcademico();
-        sa.registrarEstudiante("Juan",  "Software");
+        SistemaAcademico sistemaAcademico = new SistemaAcademico();
+        sistemaAcademico.registrarEstudiante("Juan",  "Software");
 
-        assertNotNull(sa.buscarPorId(1L));
+        assertNotNull(sistemaAcademico.buscarPorId(1L));
     }
 
     @Test
     void testBuscarIdInexistente() {
-        SistemaAcademico sa = new SistemaAcademico();
-        sa.registrarEstudiante("Juan",  "Software");
+        SistemaAcademico sistemaAcademico = new SistemaAcademico();
+        sistemaAcademico.registrarEstudiante("Juan",  "Software");
 
-        assertNull(sa.buscarPorId(99999L));
+        assertNull(sistemaAcademico.buscarPorId(99999L));
     }
 
     @Test
     void testGenerarRanking(){
-        SistemaAcademico sa = new SistemaAcademico();
-        assertTrue(sa.generarRanking().isEmpty());
+        SistemaAcademico sistemaAcademico = new SistemaAcademico();
+        assertTrue(sistemaAcademico.generarRanking().isEmpty());
     }
 
     @Test
     void testListarEstudiantesVacios(){
-        SistemaAcademico sa = new SistemaAcademico();
-        assertTrue(sa.obtenerTodos().isEmpty());
+        SistemaAcademico sistemaAcademico = new SistemaAcademico();
+        assertTrue(sistemaAcademico.obtenerTodos().isEmpty());
     }
 
     @Test
     void testObtenerTodosNull(){
-        SistemaAcademico sa = new SistemaAcademico();
-        Estudiante es1 = sa.registrarEstudiante("Juan",  "Software");
-        Estudiante es2 = sa.registrarEstudiante("Jose",  "Software");
+        SistemaAcademico sistemaAcademico = new SistemaAcademico();
+        sistemaAcademico.registrarEstudiante("Juan",  "Software");
+        sistemaAcademico.registrarEstudiante("Jose",  "Software");
 
-        assertFalse(sa.obtenerTodos().isEmpty());
+        assertFalse(sistemaAcademico.obtenerTodos().isEmpty());
     }
 }
