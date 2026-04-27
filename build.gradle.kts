@@ -115,8 +115,8 @@ tasks.jacocoTestReport {
 
 sonar {
     properties {
-        property("sonar.projectKey", "Chokkoramo_Registro-Estudiantes")
-        property("sonar.projectName", "Registro-Estudiantes.git")
+        property("sonar.projectKey", "chokkoramo_Registro-Estudiantes")
+        property("sonar.organization", "chokkoramo")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN"))
 

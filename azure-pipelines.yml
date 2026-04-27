@@ -33,37 +33,18 @@ stages:
           - script: java -version
             displayName: "Verificar Java"
 
-          # Configuración de SonarCloud antes del build
-          - task: SonarCloudPrepare@1
-            inputs:
-              SonarCloud: 'SonarCloudConnection'  # Service Connection configurado en Azure
-              organization: 'chokkoramo'
-              scannerMode: 'Other'
-              configMode: 'manual'
-              cliProjectKey: 'chokkoramo_Registro-Estudiantes'
-              cliProjectName: 'RegistroEstudiantes'
-              extraProperties: |
-                sonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
-
-          # Compilación, pruebas unitarias, pruebas de aceptación y generación de cobertura
+          # Compilación, pruebas unitarias, pruebas de aceptación, cobertura y análisis de SonarCloud
           - task: Gradle@3
-            displayName: 'Build + Tests + Coverage'
+            displayName: 'Build + Tests + Coverage + Sonar'
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
               gradleOptions: '-Dfile.encoding=UTF-8 -Xmx3072m'
-              tasks: 'clean test acceptanceTest jacocoTestReport'
+              tasks: 'clean test acceptanceTest jacocoTestReport sonar -Dsonar.qualitygate.wait=true'
               publishJUnitResults: true
               testResultsFiles: '**/TEST-*.xml'
-
-          # Ejecución del análisis en SonarCloud
-          - task: SonarCloudAnalyze@1
-
-          # Espera el resultado del Quality Gate y falla el pipeline si no se cumple
-          - task: SonarCloudPublish@1
-            displayName: "Quality Gate"
-            inputs:
-              pollingTimeoutSec: '300'
+            env:
+              SONAR_TOKEN: $(SONAR_TOKEN)
 
 
   # Pruebas de rendimiento usando JMeter sobre la API levantada localmente
