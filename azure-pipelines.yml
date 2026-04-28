@@ -5,7 +5,7 @@ pool:
   name: Default
 
 variables:
-  projectDir: '.'
+  projectDir: 'RegistroEstudiantes'
 
 stages:
 
@@ -40,6 +40,7 @@ stages:
             inputs:
               codeCoverageTool: 'JaCoCo'
               summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport.xml'
+              reportDirectory: '$(projectDir)/build/reports/jacoco/test/html'
 
 
   # Pruebas de rendimiento usando JMeter sobre la API levantada localmente
