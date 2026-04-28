@@ -15,20 +15,16 @@ AZP_POOL=${AZP_POOL:-Default}
 
 cd /azp
 
-echo "Limpiando configuración previa del agente..."
+echo "Eliminando configuración previa..."
+./config.sh remove --unattended --auth pat --token "$AZP_TOKEN" || true
 
-if [ -f .agent ]; then
-  ./config.sh remove --unattended --auth pat --token "$AZP_TOKEN" || true
-fi
-
-# Limpia cache de tasks
-rm -rf _work/_tasks || true
-rm -rf _work/_tool || true
+rm -rf .agent .credentials .credentials_rsaparams || true
+rm -rf _work _diag _tasks _tool || true
 
 echo "Configurando agente..."
 
 ./config.sh --unattended \
-  --agent "$(hostname)" \
+  --agent "$(hostname)-$(date +%s)" \
   --url "$AZP_URL" \
   --auth pat \
   --token "$AZP_TOKEN" \
@@ -40,4 +36,4 @@ echo "Iniciando agente..."
 
 export VSO_AGENT_IGNORE=AZP_TOKEN
 
-./run.sh
+./run.sh --once

@@ -2,7 +2,6 @@ services:
 
   agente-azure:
     build: ./agente-azure
-    container_name: agente-devops-01
     env_file:
       - .env
     depends_on:
