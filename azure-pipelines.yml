@@ -41,6 +41,7 @@ stages:
               codeCoverageTool: 'JaCoCo'
               summaryFileLocation: 'build/reports/jacoco/test/jacocoTestReport.xml'
               reportDirectory: 'build/reports/jacoco/test/html'
+              pathToSources: '$(System.DefaultWorkingDirectory)'
 
 
   # Pruebas de rendimiento usando JMeter sobre la API levantada localmente
