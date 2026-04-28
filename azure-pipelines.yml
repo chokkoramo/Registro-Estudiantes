@@ -39,7 +39,7 @@ stages:
             displayName: 'Publicar code coverage'
             inputs:
               codeCoverageTool: 'JaCoCo'
-              summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport/xml'
+              summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport.xml'
 
 
   # Pruebas de rendimiento usando JMeter sobre la API levantada localmente
@@ -73,6 +73,8 @@ stages:
               -t src/test/stress_test_Registroestudiantes.jmx \
               -l src/test/results/results.jtl \
               -j src/test/results/jmeter.log \
+              -Jjmeter.save.saveservice.output_format=csv \
+              -Jjmeter.save.saveservice.print_field_names=true \
               -Jlog_level.jmeter=ERROR
               
               jmeter \
