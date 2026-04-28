@@ -35,6 +35,12 @@ stages:
             env:
               SONAR_TOKEN: $(SONAR_TOKEN)
 
+          - task: PublishCodeCoverageResults@2
+            displayName: 'Publicar code coverage'
+            inputs:
+              codeCoverageTool: 'JaCoCo'
+              summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport/xml'
+
 
   # Pruebas de rendimiento usando JMeter sobre la API levantada localmente
   - stage: PerformanceTest
@@ -125,7 +131,7 @@ stages:
               TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
 
 
-  # Pruebas de mutación (costosas), se ejecutan solo en master
+  # Pruebas de mutación, se ejecutan solo en master
   - stage: MutationTest
     displayName: "Mutation Testing"
     dependsOn: Build
