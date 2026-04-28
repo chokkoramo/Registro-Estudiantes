@@ -100,7 +100,7 @@ stages:
               tasks: 'bootJar'
 
           - publish: $(projectDir)/build/libs
-            artifact: drop
+            artifact: ArtifactRE
 
 
   # Publicación del artefacto en Azure Artifacts (solo en master)
@@ -112,7 +112,7 @@ stages:
       - job: PublishJob
         steps:
           - download: current
-            artifact: drop
+            artifact: ArtifactRE
 
           - task: Gradle@3
             displayName: 'Publicar en Artifact Feed'
