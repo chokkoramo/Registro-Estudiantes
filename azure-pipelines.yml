@@ -62,21 +62,13 @@ stages:
           - checkout: self
             clean: false
 
-          # Cache también aquí (muy importante)
-          - task: Cache@2
-            displayName: "Cache Gradle"
-            inputs:
-              key: 'gradle | "$(Agent.OS)" | **/gradle-wrapper.properties'
-              path: ~/.gradle
-
-          # Levantar API SIN volver a usar Gradle
           - script: |
-              java -jar build/libs/*.jar > app.log 2>&1 &
+              nohup ./gradlew bootRun > app.log 2>&1 &
               sleep 10
             displayName: "Levantar API"
 
           - script: |
-              for i in {1..10}; do
+              for i in {1..5}; do
                 curl -f http://localhost:8080/estudiantes && break
                 sleep 5
               done
@@ -117,12 +109,6 @@ stages:
           - checkout: self
             clean: false
 
-          - task: Cache@2
-            displayName: "Cache Gradle"
-            inputs:
-              key: 'gradle | "$(Agent.OS)" | **/gradle-wrapper.properties'
-              path: ~/.gradle
-
           - task: Gradle@3
             displayName: 'Generar JAR'
             inputs:
@@ -150,12 +136,6 @@ stages:
           - checkout: self
             clean: false
 
-          - task: Cache@2
-            displayName: "Cache Gradle"
-            inputs:
-              key: 'gradle | "$(Agent.OS)" | **/gradle-wrapper.properties'
-              path: ~/.gradle
-
           - task: Gradle@3
             displayName: 'Publicar en Artifact Feed'
             inputs:
@@ -179,12 +159,6 @@ stages:
         steps:
           - checkout: self
             clean: false
-
-          - task: Cache@2
-            displayName: "Cache Gradle"
-            inputs:
-              key: 'gradle | "$(Agent.OS)" | **/gradle-wrapper.properties'
-              path: ~/.gradle
 
           - task: Gradle@3
             displayName: 'Ejecutar PIT'
