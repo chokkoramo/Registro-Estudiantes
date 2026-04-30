@@ -21,13 +21,6 @@ stages:
             clean: false
             fetchDepth: 0
 
-          # Cache de Gradle
-          - task: Cache@2
-            displayName: "Cache Gradle"
-            inputs:
-              key: 'gradle | "$(Agent.OS)" | **/gradle-wrapper.properties'
-              path: ~/.gradle
-
           - script: mkdir -p $(HOME)/.gradle
             displayName: "Inicializar entorno Gradle"
 
