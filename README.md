@@ -6,7 +6,6 @@
 ![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?logo=docker)
 ![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-CI%2FCD-blue?logo=azuredevops)
 
-[![Build Status](https://dev.azure.com/Chokkoramo/Registro%20Estudiantes/_apis/build/status%2Fchokkoramo.Registro-Estudiantes?branchName=master)](https://dev.azure.com/Chokkoramo/Registro%20Estudiantes/_build/latest?definitionId=1&branchName=master)
 ![Tests](https://img.shields.io/badge/tests-passing-success)
 ![Coverage](https://img.shields.io/badge/coverage-80%25-yellowgreen)
 ![Mutation Testing](https://img.shields.io/badge/mutation-tested-blueviolet)
