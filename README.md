@@ -114,4 +114,5 @@ Proyecto en evolución, con enfoque en:
 - Integración con base de datos (PostgreSQL/MySQL)  
 - Despliegue en la nube  
 - Autenticación y autorización (Spring Security)  
-- Documentación con Swagger/OpenAPI  
+- Documentación con Swagger/OpenAPI
+- Agregar frontend para pruebas 2E2
