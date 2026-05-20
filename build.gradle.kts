@@ -18,6 +18,10 @@ java {
     }
 }
 
+dependencyLocking{
+    lockAllConfigurations()
+}
+
 repositories {
     mavenCentral()
 }
