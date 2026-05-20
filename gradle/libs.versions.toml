@@ -1,7 +1,7 @@
 [versions]
 cucumber = "7.18.0"
 junit-platform = "1.10.0"
-mockito = "5.+"
+mockito = "5.23.0"
 byte-buddy = "1.17.8"
 
 [libraries]
