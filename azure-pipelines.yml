@@ -41,6 +41,7 @@ stages:
           - task: PublishCodeCoverageResults@1
             displayName: 'Publicar code coverage'
             inputs:
+              codeCoverageTool: 'JaCoCo'
               summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport.xml'
               classFilesDirectories: '$(projectDir)/build/reports/jacoco/test/html'
 
@@ -140,7 +141,10 @@ stages:
               done
             displayName: "Health Check"
 
-          - script: mkdir -p src/test/results/html
+          - script: |
+              rm -rf src/test/results
+              mkdir -p src/test/results
+            displayName: "Limpiar entorno de JMeter"
 
           - script: |
               jmeter -n \
