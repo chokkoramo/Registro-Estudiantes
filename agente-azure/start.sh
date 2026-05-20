@@ -12,28 +12,29 @@ if [ -z "$AZP_TOKEN" ]; then
 fi
 
 AZP_POOL=${AZP_POOL:-Default}
+AZP_AGENT_NAME=${AZP_AGENT_NAME:-$(hostname)}
 
 cd /azp
 
-echo "Eliminando configuración previa..."
-./config.sh remove --unattended --auth pat --token "$AZP_TOKEN" || true
+# Solo configurar si no existe
+if [ ! -f .agent ]; then
+  echo "Configurando agente..."
 
-rm -rf .agent .credentials .credentials_rsaparams || true
-rm -rf _work _diag _tasks _tool || true
-
-echo "Configurando agente..."
-
-./config.sh --unattended \
-  --agent "$(hostname)-$(date +%s)" \
-  --url "$AZP_URL" \
-  --auth pat \
-  --token "$AZP_TOKEN" \
-  --pool "$AZP_POOL" \
-  --work "_work" \
-  --replace
+  ./config.sh --unattended \
+    --agent "$AZP_AGENT_NAME" \
+    --url "$AZP_URL" \
+    --auth pat \
+    --token "$AZP_TOKEN" \
+    --pool "$AZP_POOL" \
+    --work "_work" \
+    --replace \
+    --ephemeral
+else
+  echo "Agente ya configurado, reutilizando..."
+fi
 
 echo "Iniciando agente..."
 
 export VSO_AGENT_IGNORE=AZP_TOKEN
 
-./run.sh --once
+./run.sh

@@ -1,9 +1,26 @@
 services:
 
-  agente-azure:
-    build: ./agente-azure
+  agente-build:
+    build:
+     context: ./agente-azure
+     dockerfile: build.Dockerfile
+    restart: always
     env_file:
       - .env
+    environment:
+      - AZP_POOL=Build
+    networks:
+      - jmeter-net
+
+  agente-jmeter:
+    build:
+      context: ./agente-azure
+      dockerfile: jmeter.Dockerfile
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - AZP_POOL=JMeter
     depends_on:
       - influxdb
     networks:

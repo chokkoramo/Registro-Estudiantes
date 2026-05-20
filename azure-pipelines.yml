@@ -2,16 +2,14 @@ trigger:
   - master
 
 pool:
-  name: Default
+  name: Build
 
 variables:
   projectDir: '.'
 
 stages:
 
-  # =========================
   # BUILD + TESTS + SONAR
-  # =========================
   - stage: Build
     displayName: "Build, Tests & Sonar"
     jobs:
@@ -49,59 +47,29 @@ stages:
               reportDirectory: 'build/reports/jacoco/test/html'
               pathToSources: '$(System.DefaultWorkingDirectory)'
 
-  # =========================
-  # PERFORMANCE TEST (JMeter)
-  # =========================
-  - stage: PerformanceTest
-    displayName: "Performance Tests"
+  # MUTATION TEST (PITEST)
+  - stage: MutationTest
+    displayName: "Mutation Testing"
     dependsOn: Build
-    condition: succeeded()
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
-      - job: JMeterJob
+      - job: PitestJob
         steps:
           - checkout: self
             clean: false
 
-          - script: |
-              nohup ./gradlew bootRun > app.log 2>&1 &
-              sleep 10
-            displayName: "Levantar API"
-
-          - script: |
-              for i in {1..5}; do
-                curl -f http://localhost:8080/estudiantes && break
-                sleep 5
-              done
-            displayName: "Health Check"
-
-          - script: mkdir -p src/test/results/html
-
-          - script: |
-              jmeter -n \
-                -t src/test/stress_test_Registroestudiantes.jmx \
-                -l src/test/results/results.jtl \
-                -j src/test/results/jmeter.log \
-                -Jjmeter.save.saveservice.output_format=csv \
-                -Jjmeter.save.saveservice.print_field_names=true \
-                -Jlog_level.jmeter=ERROR
-              
-              jmeter \
-                -g src/test/results/results.jtl \
-                -o src/test/results/html
-            displayName: "Ejecutar JMeter"
-
-          - task: PublishBuildArtifacts@1
+          - task: Gradle@3
+            displayName: 'Ejecutar PIT'
             inputs:
-              pathToPublish: 'src/test/results/html'
-              artifactName: 'jmeter-report'
-              publishLocation: 'Container'
+              workingDirectory: '$(projectDir)'
+              gradleWrapperFile: '$(projectDir)/gradlew'
+              gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
+              tasks: 'pitest'
 
-  # =========================
   # PACKAGE
-  # =========================
   - stage: Package
     displayName: "Package"
-    dependsOn: PerformanceTest
+    dependsOn: MutationTest
     condition: succeeded()
     jobs:
       - job: PackageJob
@@ -120,9 +88,7 @@ stages:
           - publish: $(projectDir)/build/libs
             artifact: ArtifactRE
 
-  # =========================
   # PUBLISH ARTIFACT
-  # =========================
   - stage: Publish
     displayName: "Publish Artifact"
     dependsOn: Package
@@ -146,24 +112,3 @@ stages:
             env:
               username: 'ArtifactFeed'
               TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
-
-  # =========================
-  # MUTATION TEST (PITEST)
-  # =========================
-  - stage: MutationTest
-    displayName: "Mutation Testing"
-    dependsOn: Build
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    jobs:
-      - job: PitestJob
-        steps:
-          - checkout: self
-            clean: false
-
-          - task: Gradle@3
-            displayName: 'Ejecutar PIT'
-            inputs:
-              workingDirectory: '$(projectDir)'
-              gradleWrapperFile: '$(projectDir)/gradlew'
-              gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
-              tasks: 'pitest'
