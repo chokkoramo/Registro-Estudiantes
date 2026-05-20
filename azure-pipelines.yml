@@ -38,12 +38,11 @@ stages:
             env:
               SONAR_TOKEN: $(SONAR_TOKEN)
 
-          - task: PublishCodeCoverageResults@2
+          - task: PublishCodeCoverageResults@1
             displayName: 'Publicar code coverage'
             inputs:
               summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport.xml'
-              pathToSources: '$(projectDir)/src/main/java'
-              classFilesDirectories: '$(projectDir)/build/classes/java/main'
+              classFilesDirectories: '$(projectDir)/build/reports/jacoco/test/html'
 
   # 2. MUTATION TEST (Usa el pool Build)
   - stage: MutationTest
