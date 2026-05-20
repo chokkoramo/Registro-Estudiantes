@@ -7,46 +7,41 @@ pool:
 variables:
   projectDir: '.'
 
-# PERFORMANCE TEST (JMeter)
-stage: PerformanceTest
-displayName: "Performance Tests"
-dependsOn: Build
-condition: succeeded()
-jobs:
-  - job: JMeterJob
-    steps:
-      - checkout: self
-        clean: false
+stages:
+  - stage: PerformanceTest
+    displayName: "Performance Tests"
+    jobs:
+      - job: JMeterJob
+        steps:
+          - checkout: self
+            clean: false
 
-      - script: |
-          nohup ./gradlew bootRun > app.log 2>&1 &
-        displayName: "Levantar API"
+          - script: |
+              nohup ./gradlew bootRun > app.log 2>&1 &
+            displayName: "Levantar API"
 
-      - script: |
-          for i in {1..10}; do
-            curl -f http://localhost:8080/estudiantes && break
-            sleep 5
-          done
-        displayName: "Health Check"
+          - script: |
+              for i in {1..10}; do
+                curl -f http://localhost:8080/estudiantes && break
+                sleep 5
+              done
+            displayName: "Health Check"
 
-      - script: mkdir -p src/test/results/html
+          - script: mkdir -p src/test/results/html
 
-      - script: |
-          jmeter -n \
-            -t src/test/stress_test_Registroestudiantes.jmx \
-            -l src/test/results/results.jtl \
-            -j src/test/results/jmeter.log \
-            -Jjmeter.save.saveservice.output_format=csv \
-            -Jjmeter.save.saveservice.print_field_names=true \
-            -Jlog_level.jmeter=ERROR
-            
-          jmeter \
-            -g src/test/results/results.jtl \
-            -o src/test/results/html
-        displayName: "Ejecutar JMeter"
+          - script: |
+              jmeter -n \
+                -t src/test/stress_test_Registroestudiantes.jmx \
+                -l src/test/results/results.jtl \
+                -j src/test/results/jmeter.log \
+                -e -o src/test/results/html \
+                -Jjmeter.save.saveservice.output_format=csv \
+                -Jjmeter.save.saveservice.print_field_names=true \
+                -Jlog_level.jmeter=ERROR
+            displayName: "Ejecutar JMeter"
 
-      - task: PublishBuildArtifacts@1
-        inputs:
-          pathToPublish: 'src/test/results/html'
-          artifactName: 'jmeter-report'
-          publishLocation: 'Container'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: 'src/test/results/html'
+              artifactName: 'jmeter-report'
+              publishLocation: 'Container'
