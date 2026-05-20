@@ -1,19 +1,18 @@
 trigger:
   - master
 
-pool:
-  name: Build
-
 variables:
   projectDir: '.'
 
 stages:
 
-  # BUILD + TESTS + SONAR
+  # 1. BUILD + TESTS + SONAR (Usa el pool Build)
   - stage: Build
     displayName: "Build, Tests & Sonar"
     jobs:
       - job: BuildJob
+        pool:
+          name: Build
         steps:
           - checkout: self
             clean: false
@@ -42,18 +41,19 @@ stages:
           - task: PublishCodeCoverageResults@2
             displayName: 'Publicar code coverage'
             inputs:
-              codeCoverageTool: 'JaCoCo'
-              summaryFileLocation: 'build/reports/jacoco/test/jacocoTestReport.xml'
-              reportDirectory: 'build/reports/jacoco/test/html'
-              pathToSources: '$(System.DefaultWorkingDirectory)'
+              summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport.xml'
+              pathToSources: '$(projectDir)/src/main/java'
+              classFilesDirectories: '$(projectDir)/build/classes/java/main'
 
-  # MUTATION TEST (PITEST)
+  # 2. MUTATION TEST (Usa el pool Build)
   - stage: MutationTest
     displayName: "Mutation Testing"
     dependsOn: Build
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
       - job: PitestJob
+        pool:
+          name: Build
         steps:
           - checkout: self
             clean: false
@@ -66,13 +66,15 @@ stages:
               gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
               tasks: 'pitest'
 
-  # PACKAGE
+  # 3. PACKAGE (Usa el pool Build)
   - stage: Package
     displayName: "Package"
     dependsOn: MutationTest
     condition: succeeded()
     jobs:
       - job: PackageJob
+        pool:
+          name: Build
         steps:
           - checkout: self
             clean: false
@@ -88,13 +90,15 @@ stages:
           - publish: $(projectDir)/build/libs
             artifact: ArtifactRE
 
-  # PUBLISH ARTIFACT
+  # 4. PUBLISH ARTIFACT (Usa el pool Build)
   - stage: Publish
     displayName: "Publish Artifact"
     dependsOn: Package
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
       - job: PublishJob
+        pool:
+          name: Build
         steps:
           - download: current
             artifact: ArtifactRE
@@ -112,3 +116,46 @@ stages:
             env:
               username: 'ArtifactFeed'
               TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
+
+  # 5. PERFORMANCE TEST (pool JMeter)
+  - stage: PerformanceTest
+    displayName: "Performance Tests"
+    dependsOn: Publish
+    condition: succeeded()
+    jobs:
+      - job: JMeterJob
+        pool:
+          name: JMeter
+        steps:
+          - checkout: self
+            clean: false
+
+          - script: |
+              nohup ./gradlew bootRun > app.log 2>&1 &
+            displayName: "Levantar API"
+
+          - script: |
+              for i in {1..10}; do
+                curl -f http://localhost:8080/estudiantes && break
+                sleep 5
+              done
+            displayName: "Health Check"
+
+          - script: mkdir -p src/test/results/html
+
+          - script: |
+              jmeter -n \
+                -t src/test/stress_test_Registroestudiantes.jmx \
+                -l src/test/results/results.jtl \
+                -j src/test/results/jmeter.log \
+                -e -o src/test/results/html \
+                -Jjmeter.save.saveservice.output_format=csv \
+                -Jjmeter.save.saveservice.print_field_names=true \
+                -Jlog_level.jmeter=ERROR
+            displayName: "Ejecutar JMeter"
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: 'src/test/results/html'
+              artifactName: 'jmeter-report'
+              publishLocation: 'Container'
