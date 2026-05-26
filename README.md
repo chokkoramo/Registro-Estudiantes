@@ -80,10 +80,26 @@ Se usa un plan de pruebas de JMeter para evaluar los tiempos de respuesta, numer
 
 Se utiliza Docker para:
 
+- Ejecutar la API de Registro de Estudiantes
 - Ejecutar el agente de Azure DevOps
 - Ejecutar Grafana / influxDB  
 - Garantizar entornos reproducibles  
 - Facilitar la integración continua  
+
+### Ejecutar la API con Docker Compose
+
+```bash
+docker compose up --build registro-estudiantes-api
+```
+
+La API queda disponible en:
+
+- `http://localhost:8080/api/estudiantes`
+- `http://localhost:8080/h2-console`
+
+Dentro de la red de Docker Compose, otros servicios pueden conectarse usando:
+
+- `http://registro-estudiantes-api:8080`
 
 ---
 

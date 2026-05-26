@@ -1,5 +1,23 @@
 services:
 
+  registro-estudiantes-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: registro-estudiantes-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:registro_estudiantes
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_H2_CONSOLE_ENABLED=true
+      - SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS=true
+    networks:
+      - jmeter-net
+
   agente-build:
     build:
      context: ./agente-azure
