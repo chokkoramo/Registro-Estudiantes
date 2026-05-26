@@ -9,15 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RegistroNotasSteps {
     private double nota;
-    private boolean validacion;
     private Estudiante estudiante;
-    private String nombre, programa;
 
     @Given("Crear estudiante con nombre {string} y programa {string} despues se le asigna una nota de {double}")
     public void crearEstudianteConNota(String nombre, String programa, double nota) {
         this.nota = nota;
-        this.nombre = nombre;
-        this.programa = programa;
         this.estudiante = new Estudiante(nombre, programa);
     }
 
