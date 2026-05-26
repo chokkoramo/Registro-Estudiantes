@@ -25,7 +25,7 @@ El sistema permite:
 - Generar ranking de estudiantes  
 - Consultar estudiantes registrados  
 
-Actualmente, la información se maneja **en memoria** (sin base de datos).
+Actualmente, la información se maneja con **H2 en memoria usando Spring Data JPA**.
 
 ---
 
@@ -94,7 +94,7 @@ El proyecto sigue una arquitectura típica de Spring Boot:
 - `controller` → Manejo de endpoints REST  
 - `service` → Lógica de negocio  
 - `model` → Entidades del sistema  
-- `repository` → Persistencia (en memoria)  
+- `repository` → Persistencia con Spring Data JPA  
 - `test` → Pruebas unitarias y de integración  
 
 ---
@@ -105,13 +105,13 @@ Proyecto en evolución, con enfoque en:
 
 - Mejora continua de calidad  
 - Automatización de procesos  
-- Escalabilidad futura (posible integración con base de datos y despliegue en la nube)
+- Escalabilidad futura (posible integración con PostgreSQL/MySQL y despliegue en la nube)
 
 ---
 
 ## 📈 Mejoras futuras
 
-- Integración con base de datos (PostgreSQL/MySQL)  
+- Migración de H2 a PostgreSQL/MySQL  
 - Despliegue en la nube  
 - Autenticación y autorización (Spring Security)  
 - Documentación con Swagger/OpenAPI

@@ -38,7 +38,7 @@ stages:
             env:
               SONAR_TOKEN: $(SONAR_TOKEN)
 
-          - task: PublishCodeCoverageResults@1
+          - task: PublishCodeCoverageResults@2
             displayName: 'Publicar code coverage'
             inputs:
               codeCoverageTool: 'JaCoCo'

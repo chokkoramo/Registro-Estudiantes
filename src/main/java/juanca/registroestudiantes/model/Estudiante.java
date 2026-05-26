@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,28 +26,29 @@ public class Estudiante {
 
     private String nombre;
     private String programa;
-    private final List<Double> notas = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "estudiante_notas", joinColumns = @JoinColumn(name = "estudiante_id"))
+    @Column(name = "nota")
+    private List<Double> notas = new ArrayList<>();
 
-    public Estudiante(String nombre, String
-                      programa, Double notas) {
+    public Estudiante(String nombre, String programa, Double nota) {
+        validarDatosBasicos(nombre, programa);
         this.nombre = nombre;
         this.programa = programa;
+        if (nota != null) {
+            agregarNota(nota);
+        }
     }
 
     public Estudiante(Long id, String nombre, String programa) {
-        if(nombre == null || nombre.isBlank()){
-            throw new IllegalArgumentException("Nombre invalido");
-        }
-        if(programa == null || programa.isBlank()){
-            throw new IllegalArgumentException("Programa invalido");
-        }
-
+        validarDatosBasicos(nombre, programa);
         this.id = id;
         this.nombre = nombre;
         this.programa = programa;
     }
 
     public Estudiante(String nombre, String programa) {
+        validarDatosBasicos(nombre, programa);
         this.nombre = nombre;
         this.programa = programa;
     }
@@ -72,5 +77,14 @@ public class Estudiante {
 
     public static boolean validarRango(double nota){
         return nota>= 0.0 && nota<=5.0;
+    }
+
+    private static void validarDatosBasicos(String nombre, String programa) {
+        if(nombre == null || nombre.isBlank()){
+            throw new IllegalArgumentException("Nombre invalido");
+        }
+        if(programa == null || programa.isBlank()){
+            throw new IllegalArgumentException("Programa invalido");
+        }
     }
 }

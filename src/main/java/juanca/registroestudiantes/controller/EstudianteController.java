@@ -1,17 +1,18 @@
 package juanca.registroestudiantes.controller;
 
-import juanca.registroestudiantes.dto.EstudianteRequestDTO;
-import juanca.registroestudiantes.dto.EstudianteResponseDTO;
-import juanca.registroestudiantes.dto.NotaDTO;
+import jakarta.validation.Valid;
+import juanca.registroestudiantes.dto.*;
 import juanca.registroestudiantes.exception.EstudianteNoEncontradoException;
 import juanca.registroestudiantes.model.Estudiante;
-import juanca.registroestudiantes.model.SistemaAcademico;
+import juanca.registroestudiantes.service.SistemaAcademico;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/estudiantes")
+@RequestMapping("/api/estudiantes")
 public class EstudianteController {
 
     private final SistemaAcademico sistema;
@@ -21,40 +22,40 @@ public class EstudianteController {
     }
 
     @PostMapping
-    public EstudianteResponseDTO registrar(@RequestBody EstudianteRequestDTO dto){
+    public ResponseEntity<EstudianteResponseDTO> registrar(@Valid @RequestBody EstudianteRequestDTO dto){
         Estudiante estudiante = sistema.registrarEstudiante(
                 dto.getNombre(),
                 dto.getPrograma()
         );
 
-        return EstudianteResponseDTO.builder()
-                .id(estudiante.getId())
-                .nombre(estudiante.getNombre())
-                .programa(estudiante.getPrograma())
-                .promedio(estudiante.calcularPromedio())
-                .aprobado(estudiante.estaAprobado())
-                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(convertir(estudiante));
     }
 
     @PostMapping("/{id}/notas")
-    public String asignarNotas(@PathVariable Long id,
-                               @RequestBody List<NotaDTO> notas){
+    public MensajeResponseDTO asignarNotas(@PathVariable Long id,
+                                           @Valid @RequestBody List<@Valid NotaDTO> notas){
 
         notas.forEach(n -> sistema.asignarNota(id, n.getNota()));
 
-        return "Se asignaron " + notas.size() + " notas";
+        return MensajeResponseDTO.builder()
+                .mensaje("Se asignaron " + notas.size() + " notas")
+                .totalNotas(notas.size())
+                .build();
     }
 
     @GetMapping("/{id}/promedio")
-    public double promedio(@PathVariable Long id) {
+    public PromedioResponseDTO promedio(@PathVariable Long id) {
         Estudiante e = sistema.buscarPorId(id);
 
         if(e == null) throw new EstudianteNoEncontradoException(id);
-        return e.calcularPromedio();
+        return PromedioResponseDTO.builder()
+                .id(e.getId())
+                .promedio(e.calcularPromedio())
+                .build();
     }
 
     @GetMapping("/{id}/estado")
-    public String estado(@PathVariable Long id){
+    public EstadoResponseDTO estado(@PathVariable Long id){
 
         Estudiante e = sistema.buscarPorId(id);
 
@@ -62,7 +63,13 @@ public class EstudianteController {
             throw new EstudianteNoEncontradoException(id);
         }
 
-        return e.estaAprobado() ? "APROBADO":"REPROBADO";
+        boolean aprobado = e.estaAprobado();
+
+        return EstadoResponseDTO.builder()
+                .id(e.getId())
+                .estado(aprobado ? "APROBADO":"REPROBADO")
+                .aprobado(aprobado)
+                .build();
     }
 
     @GetMapping("/ranking")
