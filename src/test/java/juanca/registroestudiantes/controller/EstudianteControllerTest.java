@@ -3,6 +3,7 @@ package juanca.registroestudiantes.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import juanca.registroestudiantes.dto.EstudianteRequestDTO;
 import juanca.registroestudiantes.dto.NotaDTO;
+import juanca.registroestudiantes.exception.ApiExceptionHandler;
 import juanca.registroestudiantes.model.Estudiante;
 import juanca.registroestudiantes.service.SistemaAcademico;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,9 @@ class EstudianteControllerTest {
     void setUp() {
         sistemaMock = mock(SistemaAcademico.class);
         objectMapper = new ObjectMapper();
-        mockMvc = MockMvcBuilders.standaloneSetup(new EstudianteController(sistemaMock)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new EstudianteController(sistemaMock))
+                .setControllerAdvice(new ApiExceptionHandler())
+                .build();
     }
 
     @Test
@@ -180,9 +183,51 @@ class EstudianteControllerTest {
         when(sistemaMock.buscarPorId(99L)).thenReturn(null);
 
         mockMvc.perform(get("/api/estudiantes/99/promedio"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.mensaje").value("Estudiante con id 99 no existe"));
 
         mockMvc.perform(get("/api/estudiantes/99/estado"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.mensaje").value("Estudiante con id 99 no existe"));
+    }
+
+    @Test
+    @DisplayName("POST /api/estudiantes - Debe validar datos requeridos")
+    void testRegistrarRequestInvalido() throws Exception {
+        EstudianteRequestDTO request = new EstudianteRequestDTO("", "");
+
+        mockMvc.perform(post("/api/estudiantes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensaje").value("La solicitud tiene datos invalidos"))
+                .andExpect(jsonPath("$.errores").isArray());
+    }
+
+    @Test
+    @DisplayName("POST /api/estudiantes/{id}/notas - Debe validar rango de notas")
+    void testAsignarNotaRequestInvalido() throws Exception {
+        List<NotaDTO> notas = List.of(new NotaDTO(6.0));
+
+        mockMvc.perform(post("/api/estudiantes/1/notas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(notas)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensaje").value("La solicitud tiene datos invalidos"))
+                .andExpect(jsonPath("$.errores").isArray());
+    }
+
+    @Test
+    @DisplayName("POST /api/estudiantes/{id}/notas - Debe responder error de negocio en JSON")
+    void testAsignarNotaErrorDeNegocio() throws Exception {
+        List<NotaDTO> notas = List.of(new NotaDTO(4.0));
+        doThrow(new IllegalArgumentException("Nota invalida"))
+                .when(sistemaMock).asignarNota(1L, 4.0);
+
+        mockMvc.perform(post("/api/estudiantes/1/notas")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(notas)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.mensaje").value("Nota invalida"));
     }
 }

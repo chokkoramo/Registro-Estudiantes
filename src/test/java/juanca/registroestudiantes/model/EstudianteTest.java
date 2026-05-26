@@ -86,6 +86,51 @@ class EstudianteTest {
     }
 
     @Test
+    void testNombreNull(){
+        assertThrows(IllegalArgumentException.class, () -> new Estudiante(1L, null, "Psicologia"));
+    }
+
+    @Test
+    void testProgramaNull(){
+        assertThrows(IllegalArgumentException.class, () -> new Estudiante(1L, "Juanito", null));
+    }
+
+    @Test
+    void testConstructorConNotaInicial(){
+        Estudiante estudiante = new Estudiante("Sofia", "Medicina", 4.2);
+
+        assertEquals(List.of(4.2), estudiante.getNotas());
+    }
+
+    @Test
+    void testConstructorConNotaNull(){
+        Estudiante estudiante = new Estudiante("Sofia", "Medicina", null);
+
+        assertTrue(estudiante.getNotas().isEmpty());
+    }
+
+    @Test
+    void testGetNotasNoPermiteModificarLista() {
+        Estudiante estudiante = new Estudiante(1L, "Alejandro", "Cine");
+        estudiante.agregarNota(4.5);
+
+        List<Double> notas = estudiante.getNotas();
+
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> notas.add(3.0)
+        );
+    }
+
+    @Test
+    void testValidarRangoFueraDeLimites(){
+        assertAll(
+                () -> assertFalse(Estudiante.validarRango(-0.1)),
+                () -> assertFalse(Estudiante.validarRango(5.1))
+        );
+    }
+
+    @Test
     void testPromedioValido(){
         Estudiante estudiante = new Estudiante(1L, "Carlos", "Mecanica");
 

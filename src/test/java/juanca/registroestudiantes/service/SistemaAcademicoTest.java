@@ -55,6 +55,13 @@ class SistemaAcademicoTest {
     }
 
     @Test
+    void testBuscarIdNull() {
+        SistemaAcademico sistemaAcademico = new SistemaAcademico(mock(EstudianteRepository.class));
+
+        assertThrows(IllegalArgumentException.class, () -> sistemaAcademico.buscarPorId(null));
+    }
+
+    @Test
     void testGenerarRanking(){
         EstudianteRepository repository = mock(EstudianteRepository.class);
         SistemaAcademico sistemaAcademico = new SistemaAcademico(repository);
@@ -91,5 +98,18 @@ class SistemaAcademicoTest {
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
         assertThrows(EstudianteNoEncontradoException.class, () -> sistemaAcademico.asignarNota(99L, 4.0));
+    }
+
+    @Test
+    void testAsignarNotaEstudianteExistente() {
+        EstudianteRepository repository = mock(EstudianteRepository.class);
+        SistemaAcademico sistemaAcademico = new SistemaAcademico(repository);
+        Estudiante estudiante = new Estudiante(1L, "Juan", "Software");
+        when(repository.findById(1L)).thenReturn(Optional.of(estudiante));
+
+        sistemaAcademico.asignarNota(1L, 4.0);
+
+        assertEquals(List.of(4.0), estudiante.getNotas());
+        verify(repository).save(estudiante);
     }
 }
