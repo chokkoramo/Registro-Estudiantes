@@ -62,4 +62,5 @@ public class RegistroDefinitions {
         String mensajeActual = registroSteps.obtenerMensajeEnPantalla();
         assertEquals(mensajeEsperado, mensajeActual, "El mensaje en pantalla no es el esperado");
     }
+
 }
