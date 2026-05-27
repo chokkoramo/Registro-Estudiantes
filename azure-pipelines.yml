@@ -94,7 +94,7 @@ stages:
           - script: |
               set -e
               cd frontend
-              npm ci --cache ../build/npm-cache
+              npm install --legacy-peer-deps --no-audit --no-fund --cache ../build/npm-cache
               REACT_APP_API_URL=http://localhost:8080 PORT=3001 BROWSER=none npm start > ../build/frontend-acceptance.log 2>&1 &
               echo $! > ../build/frontend-acceptance.pid
 
