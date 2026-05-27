@@ -25,12 +25,12 @@ export default function Registro() {
             <h2>Registrar Nuevo Estudiante</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label>Nombre</label>
-                    <input value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+                    <label>Nombre
+                    <input value={nombre} onChange={(e) => setNombre(e.target.value)} required /></label>
                 </div>
                 <div className="form-group">
-                    <label>Programa</label>
-                    <input value={programa} onChange={(e) => setPrograma(e.target.value)} required />
+                    <label>Programa
+                    <input value={programa} onChange={(e) => setPrograma(e.target.value)} required /></label>
                 </div>
                 <button type="submit">Registrar</button>
             </form>

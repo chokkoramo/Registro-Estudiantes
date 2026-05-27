@@ -39,8 +39,8 @@ export default function GestionEstudiante() {
             <h2>Gestión Individual por ID</h2>
 
             <div className="form-group">
-                <label>ID del Estudiante</label>
-                <input type="number" min={1} value={id} onChange={(e) => setId(e.target.value)} />
+                <label>ID del Estudiante<input type="number" min={1} value={id} onChange={(e) => setId(e.target.value)} />
+                </label>
             </div>
 
             <div className="section-box">

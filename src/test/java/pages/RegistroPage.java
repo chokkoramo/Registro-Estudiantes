@@ -12,13 +12,13 @@ public class RegistroPage {
 
     public void ingresarNombre(String nombre) {
         page.getByRole(AriaRole.TEXTBOX,
-                new Page.GetByRoleOptions().setName("Nombre:")
+                new Page.GetByRoleOptions().setName("Nombre")
         ).fill(nombre);
     }
 
     public void ingresarPrograma(String programa) {
         page.getByRole(AriaRole.TEXTBOX,
-                new Page.GetByRoleOptions().setName("Programa:")
+                new Page.GetByRoleOptions().setName("Programa")
         ).fill(programa);
     }
 

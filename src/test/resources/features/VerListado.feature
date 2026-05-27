@@ -1,8 +1,7 @@
 @2E2
   Feature: Ver listado de todos los estudiantes
     Scenario Outline: Registro de estudiantes y verificacion del listado
-      Given que el usuario esta en la pagina de inicio
-      When el usuario da click en la opcion del menu Registrar Estudiante
+      Given el usuario da click en la opcion del menu Registrar Estudiante
       And ingresa su nombre "<nombre>" y el programa "<programa>"
       And hace click al boton registrar
       And el usuario hace click en la opcion del menu ver listado

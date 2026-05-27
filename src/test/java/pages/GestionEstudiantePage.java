@@ -13,7 +13,7 @@ public class GestionEstudiantePage {
 
     public void ingresarId(String id) {
         page.getByRole(AriaRole.SPINBUTTON,
-                new Page.GetByRoleOptions().setName("ID del Estudiante:")
+                new Page.GetByRoleOptions().setName("ID del Estudiante")
         ).fill(id);
     }
 
