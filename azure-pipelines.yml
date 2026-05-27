@@ -175,7 +175,7 @@ stages:
 
           - script: |
               for i in {1..10}; do
-                curl -f https://registro-estudiantes.onrender.com//api/estudiantes && exit 0
+                curl -f https://registro-estudiantes.onrender.com/api/estudiantes && exit 0
                 sleep 4
               done
               exit 1
