@@ -6,7 +6,9 @@ variables:
 
 stages:
 
+  # =========================
   # 1. BUILD + TESTS + SONAR
+  # =========================
   - stage: Build
     displayName: "Build, Tests & Sonar"
     jobs:
@@ -14,6 +16,7 @@ stages:
         pool:
           name: Build
         steps:
+
           - checkout: self
             clean: false
             fetchDepth: 0
@@ -22,34 +25,68 @@ stages:
             displayName: "Inicializar entorno Gradle"
 
           - task: Gradle@3
-            displayName: 'Build + Tests + Coverage + Sonar'
+            displayName: 'Build + Unit Tests + Coverage + Sonar'
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
               gradleOptions: >
                 -Dfile.encoding=UTF-8
                 -Xmx3072m
-                -Dorg.gradle.wrapper.network.timeout=120000
+                -Dorg.gradle.daemon=false
+                -Dorg.gradle.parallel=true
+                -Dorg.gradle.configureondemand=true
               tasks: >
-                clean build acceptanceTest jacocoTestReport sonar
+                clean test jacocoTestReport sonar
                 -Dsonar.qualitygate.wait=true
                 -Dsonar.exclusions=frontend/**
               publishJUnitResults: true
-              testResultsFiles: 'build/test-results/*/TEST-*.xml'
+              testResultsFiles: 'build/test-results/test/TEST-*.xml'
             env:
               SONAR_TOKEN: $(SONAR_TOKEN)
 
+          # Coverage correcto (ruta bien definida)
           - task: PublishCodeCoverageResults@1
             displayName: 'Publicar code coverage'
             inputs:
               codeCoverageTool: 'JaCoCo'
               summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport.xml'
-              classFilesDirectories: '$(projectDir)/build/reports/jacoco/test/html'
 
-  # 2. MUTATION TEST
+  # =========================
+  # 2. ACCEPTANCE TEST (SEPARADO)
+  # =========================
+  - stage: AcceptanceTest
+    displayName: "Acceptance Tests"
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: AcceptanceJob
+        pool:
+          name: Build
+        steps:
+
+          - checkout: self
+            clean: false
+
+          - task: Gradle@3
+            displayName: 'Run Acceptance Tests'
+            inputs:
+              workingDirectory: '$(projectDir)'
+              gradleWrapperFile: '$(projectDir)/gradlew'
+              tasks: 'acceptanceTest'
+              publishJUnitResults: false
+
+          - task: PublishTestResults@2
+            displayName: "Publish Acceptance Tests"
+            inputs:
+              testResultsFiles: 'build/test-results/acceptanceTest/TEST-*.xml'
+              testRunTitle: "Acceptance Tests"
+
+  # =========================
+  # 3. MUTATION TEST
+  # =========================
   - stage: MutationTest
     displayName: "Mutation Testing"
-    dependsOn: Build
+    dependsOn: AcceptanceTest
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     jobs:
       - job: PitestJob
@@ -64,10 +101,11 @@ stages:
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
-              gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
               tasks: 'pitest'
 
-  # 3. PACKAGE
+  # =========================
+  # 4. PACKAGE
+  # =========================
   - stage: Package
     displayName: "Package"
     dependsOn: MutationTest
@@ -77,6 +115,7 @@ stages:
         pool:
           name: Build
         steps:
+
           - checkout: self
             clean: false
 
@@ -85,13 +124,14 @@ stages:
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
-              gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
               tasks: 'bootJar -x test -x acceptanceTest'
 
           - publish: $(projectDir)/build/libs
             artifact: ArtifactRE
 
-  # 4. PUBLISH ARTIFACT
+  # =========================
+  # 5. PUBLISH
+  # =========================
   - stage: Publish
     displayName: "Publish Artifact"
     dependsOn: Package
@@ -101,6 +141,7 @@ stages:
         pool:
           name: Build
         steps:
+
           - download: current
             artifact: ArtifactRE
 
@@ -112,13 +153,14 @@ stages:
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
-              gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
               tasks: 'publish -x test -x acceptanceTest'
             env:
               username: 'ArtifactFeed'
               TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
 
-  # 5. PERFORMANCE TEST
+  # =========================
+  # 6. PERFORMANCE TEST
+  # =========================
   - stage: PerformanceTest
     displayName: "Performance Tests"
     dependsOn: Publish
@@ -128,6 +170,7 @@ stages:
         pool:
           name: JMeter
         steps:
+
           - checkout: self
             clean: false
 
@@ -137,29 +180,25 @@ stages:
 
           - script: |
               for i in {1..10}; do
-                curl -f http://localhost:8080/estudiantes && break
-                sleep 5
+                curl -f http://registro-estudiantes-api:8080/api/estudiantes && exit 0
+                sleep 4
               done
+              exit 1
             displayName: "Health Check"
 
           - script: |
               rm -rf src/test/results
               mkdir -p src/test/results
-            displayName: "Limpiar entorno de JMeter"
+            displayName: "Preparar JMeter"
 
           - script: |
               jmeter -n \
                 -t src/test/stress_test_Registroestudiantes.jmx \
                 -l src/test/results/results.jtl \
-                -j src/test/results/jmeter.log \
-                -e -o src/test/results/html \
-                -Jjmeter.save.saveservice.output_format=csv \
-                -Jjmeter.save.saveservice.print_field_names=true \
-                -Jlog_level.jmeter=ERROR
+                -e -o src/test/results/html
             displayName: "Ejecutar JMeter"
 
           - task: PublishBuildArtifacts@1
             inputs:
               pathToPublish: 'src/test/results/html'
               artifactName: 'jmeter-report'
-              publishLocation: 'Container'
