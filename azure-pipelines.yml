@@ -6,7 +6,7 @@ variables:
 
 stages:
 
-  # 1. BUILD + TESTS + SONAR (Usa el pool Build)
+  # 1. BUILD + TESTS + SONAR
   - stage: Build
     displayName: "Build, Tests & Sonar"
     jobs:
@@ -46,7 +46,7 @@ stages:
               summaryFileLocation: '$(projectDir)/build/reports/jacoco/test/jacocoTestReport.xml'
               classFilesDirectories: '$(projectDir)/build/reports/jacoco/test/html'
 
-  # 2. MUTATION TEST (Usa el pool Build)
+  # 2. MUTATION TEST
   - stage: MutationTest
     displayName: "Mutation Testing"
     dependsOn: Build
@@ -67,7 +67,7 @@ stages:
               gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
               tasks: 'pitest'
 
-  # 3. PACKAGE (Usa el pool Build)
+  # 3. PACKAGE
   - stage: Package
     displayName: "Package"
     dependsOn: MutationTest
@@ -86,12 +86,12 @@ stages:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
               gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
-              tasks: 'bootJar'
+              tasks: 'bootJar -x test -x acceptanceTest'
 
           - publish: $(projectDir)/build/libs
             artifact: ArtifactRE
 
-  # 4. PUBLISH ARTIFACT (Usa el pool Build)
+  # 4. PUBLISH ARTIFACT
   - stage: Publish
     displayName: "Publish Artifact"
     dependsOn: Package
@@ -113,12 +113,12 @@ stages:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
               gradleOptions: '-Dorg.gradle.wrapper.network.timeout=120000'
-              tasks: 'publish'
+              tasks: 'publish -x test -x acceptanceTest'
             env:
               username: 'ArtifactFeed'
               TOKEN_ARTIFACT_FEED: $(TOKEN_ARTIFACT_FEED)
 
-  # 5. PERFORMANCE TEST (pool JMeter)
+  # 5. PERFORMANCE TEST
   - stage: PerformanceTest
     displayName: "Performance Tests"
     dependsOn: Publish
