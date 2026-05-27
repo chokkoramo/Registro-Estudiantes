@@ -25,4 +25,10 @@ public class InicioPage {
                 new Page.GetByRoleOptions().setName("Ver Listado")
         ).click();
     }
+
+    public void irAGestionar() {
+        page.getByRole(AriaRole.LINK,
+                new Page.GetByRoleOptions().setName("Gestionar Estudiantes")
+        ).click();
+    }
 }
