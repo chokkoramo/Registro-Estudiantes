@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: registro-estudiantes-api
+    container_name: web-api
     restart: unless-stopped
     ports:
       - "8080:8080"

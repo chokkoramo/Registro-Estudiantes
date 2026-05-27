@@ -84,7 +84,7 @@
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Crear Estudiante 1 Juan" enabled="true">
           <stringProp name="TestPlan.comments">Crear Estudiantes</stringProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes</stringProp>
@@ -109,7 +109,7 @@
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Crear estudiante 2 Valeria" enabled="true">
           <stringProp name="TestPlan.comments">Crear Estudiantes</stringProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes</stringProp>
@@ -133,7 +133,7 @@
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Agregar notas a Estudiante 1" enabled="true">
           <stringProp name="TestPlan.comments">Crear Estudiantes</stringProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/1/notas</stringProp>
@@ -159,7 +159,7 @@
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Agregar notas a Estudiante 2" enabled="true">
           <stringProp name="TestPlan.comments">Crear Estudiantes</stringProp>
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/2/notas</stringProp>
@@ -236,7 +236,7 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Estudiantes - Warm-up" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -249,7 +249,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /api/estudiantes/1/estado" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/1/estado</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -262,7 +262,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /api/estudiantes/2/estado" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/2/estado</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -363,7 +363,7 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Estudiantes - Baseline" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -376,7 +376,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Ranking - Baseline" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/ranking</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -389,7 +389,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Estudiante 3 Sandra - Baseline" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -501,7 +501,7 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Todos los estudiantes - Stress" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -514,7 +514,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Ranking - Stress" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/ranking</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -527,7 +527,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Promedio estudiante 2 - Stress" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/2/promedio</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -666,7 +666,7 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Todos los estudiantes - Spike" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -679,7 +679,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Todos los estudiantes - Spike" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/ranking</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -781,7 +781,7 @@
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET Estudiantes - Recovery" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -794,7 +794,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /api/estudiantes/1/estado" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/1/estado</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
@@ -807,7 +807,7 @@
         </HTTPSamplerProxy>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /api/estudiantes/2/estado" enabled="true">
-          <stringProp name="HTTPSampler.domain">localhost</stringProp>
+          <stringProp name="HTTPSampler.domain">web-api</stringProp>
           <stringProp name="HTTPSampler.port">8080</stringProp>
           <stringProp name="HTTPSampler.path">/api/estudiantes/2/estado</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
