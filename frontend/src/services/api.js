@@ -1,5 +1,5 @@
-const API_URL = 'http://localhost:8080/api/estudiantes';
-const AUTH_URL = 'http://localhost:8080/api/auth';
+const API_URL = 'http://web-api:8080/api/estudiantes';
+const AUTH_URL = 'http://web-api:8080/api/auth';
 
 export const authApi = {
     login: async (username, password) => {
