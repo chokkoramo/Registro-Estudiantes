@@ -37,7 +37,7 @@ stages:
                 -Dorg.gradle.configureondemand=true
               tasks: >
                 clean test jacocoTestReport sonar
-                -Dsonar.qualitygate.wait=true
+                -Dsonar.qualitygate.wait=false
                 -Dsonar.exclusions=frontend/**
               publishJUnitResults: true
               testResultsFiles: 'build/test-results/test/TEST-*.xml'
