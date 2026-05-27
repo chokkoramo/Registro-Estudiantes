@@ -4,17 +4,19 @@ import { api } from '../services/api';
 export default function Registro() {
     const [nombre, setNombre] = useState('');
     const [programa, setPrograma] = useState('');
+    const [mensaje, setMensaje] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMensaje('');
         try {
             await api.registrar({ nombre, programa });
-            alert('¡Estudiante registrado con éxito!');
+            setMensaje('¡Estudiante registrado con éxito!');
             setNombre('');
             setPrograma('');
         } catch (error) {
             console.log(error);
-            alert('Error al registrar estudiante');
+            setMensaje('Error al registrar estudiante');
         }
     };
 
@@ -32,6 +34,12 @@ export default function Registro() {
                 </div>
                 <button type="submit" style={{ marginTop: '15px' }}>Registrar</button>
             </form>
+
+            {mensaje && (
+                <p data-testid="mensaje-notificacion" style={{ marginTop: '20px', color: 'green', fontWeight: 'bold' }}>
+                    {mensaje}
+                </p>
+            )}
         </div>
     );
 }

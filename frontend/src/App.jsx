@@ -1,30 +1,35 @@
-import { useState } from 'react';
-import Registro from "./components/Registro.jsx";
-import Listados from "./components/Listado.jsx";
-import GestionEstudiante from "./components/GestionEstudiante.jsx";
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Registro from './components/Registro.jsx';
+import Listado from './components/Listado.jsx';
+import GestionEstudiante from './components/GestionEstudiante.jsx';
 
-function App() {
-  const [vistaActiva, setVistaActiva] = useState('registro');
+const Inicio = () => <h2>Bienvenido al Sistema de Estudiantes</h2>;
 
-  return (
-      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: 'auto' }}>
-        <h1>🎓 Sistema de Registro de Estudiantes</h1>
+export default function App() {
+    return (
+        <BrowserRouter>
+            {/* Opcional: Un menú de navegación rápido para probar */}
+            <nav style={{ padding: '10px', background: '#f0f0f0', marginBottom: '20px' }}>
+                <Link to="/" style={{ marginRight: '15px' }}>Inicio</Link>
+                <Link to="/registro">Registrar Estudiante</Link>
+                <Link to="/listado">Ver Listado</Link>
+                <Link to="/GestionEstudiante">Gestionar Estudiantes</Link>
+            </nav>
 
-        {/* Menú de Navegación */}
-        <nav style={{ marginBottom: '30px', paddingBottom: '10px', borderBottom: '2px solid black' }}>
-          <button onClick={() => setVistaActiva('registro')} style={{ marginRight: '10px' }}>📝 Registro</button>
-          <button onClick={() => setVistaActiva('listados')} style={{ marginRight: '10px' }}>📋 Listas y Ranking</button>
-          <button onClick={() => setVistaActiva('gestion')}>⚙️ Notas y Consultas</button>
-        </nav>
+            {/* Aquí definimos qué componente se renderiza en cada URL */}
+            <Routes>
+                {/* Cuando la URL sea localhost:3000/ */}
+                <Route path="/" element={<Inicio />} />
 
-        {/* Renderizado condicional de componentes */}
-        <main>
-          {vistaActiva === 'registro' && <Registro />}
-          {vistaActiva === 'listados' && <Listados />}
-          {vistaActiva === 'gestion' && <GestionEstudiante />}
-        </main>
-      </div>
-  );
+                {/* Cuando la URL sea localhost:3000/registro */}
+                <Route path="/registro" element={<Registro />} />
+
+                {}
+                <Route path="/listado" element={<Listado />} />
+
+                {}
+                <Route path="/GestionEstudiante" element={<GestionEstudiante />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
-
-export default App;
