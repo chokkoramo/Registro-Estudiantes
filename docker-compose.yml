@@ -46,7 +46,7 @@ services:
 
   influxdb:
     image: influxdb:1.8
-    container_name: influxdb-jmeter
+    container_name: influxdb
     ports:
       - "8086:8086"
     environment:
@@ -56,7 +56,7 @@ services:
 
   grafana:
     image: grafana/grafana
-    container_name: grafana-jmeter
+    container_name: grafana-jm
     ports:
       - "3000:3000"
     depends_on:
