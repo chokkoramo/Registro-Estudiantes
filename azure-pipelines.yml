@@ -73,6 +73,8 @@ stages:
               gradleWrapperFile: '$(projectDir)/gradlew'
               tasks: 'acceptanceTest'
               publishJUnitResults: false
+            env:
+              FRONTEND_URL: http://frontend
 
           - task: PublishTestResults@2
             displayName: "Publish Acceptance Tests"

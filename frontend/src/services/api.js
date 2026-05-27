@@ -1,5 +1,6 @@
-const API_URL = 'http://web-api:8080/api/estudiantes';
-const AUTH_URL = 'http://web-api:8080/api/auth';
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const API_URL = `${BASE_URL}/api/estudiantes`;
+const AUTH_URL = `${BASE_URL}/api/auth`;
 
 export const authApi = {
     login: async (username, password) => {
