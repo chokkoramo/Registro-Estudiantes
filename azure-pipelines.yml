@@ -34,7 +34,7 @@ stages:
                 clean test acceptanceTest jacocoTestReport sonar
                 -Dsonar.qualitygate.wait=true
               publishJUnitResults: true
-              testResultsFiles: '**/TEST-*.xml'
+              testResultsFiles: 'build/test-results/**/TEST-*.xml'
             env:
               SONAR_TOKEN: $(SONAR_TOKEN)
 
