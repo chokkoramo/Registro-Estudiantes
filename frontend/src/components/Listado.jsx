@@ -16,13 +16,15 @@ export default function Listados() {
     }, []);
 
     return (
-        <div>
+        <div className="card">
             <h2>{esRanking ? 'Ranking de Mejores Estudiantes' : 'Todos los Estudiantes'}</h2>
 
-            <button onClick={() => cargarDatos(false)}>Ver Todos</button>
-            <button onClick={() => cargarDatos(true)} style={{ marginLeft: '10px' }}>Ver Ranking</button>
+            <div className="form-actions">
+                <button className={!esRanking ? undefined : 'btn-secondary'} onClick={() => cargarDatos(false)}>Ver Todos</button>
+                <button className={esRanking ? undefined : 'btn-secondary'} onClick={() => cargarDatos(true)}>Ver Ranking</button>
+            </div>
 
-            <table border="1" style={{ marginTop: '20px', width: '100%', textAlign: 'center' }}>
+            <table>
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -48,7 +50,9 @@ export default function Listados() {
                         <td>{est.promedio.toFixed(2)}</td>
 
                         <td data-testid="estado-estudiante">
-                            {est.aprobado ? 'Aprobado' : 'Reprobado'}
+                            <span className={`badge ${est.aprobado ? 'badge-aprobado' : 'badge-reprobado'}`}>
+                                {est.aprobado ? 'Aprobado' : 'Reprobado'}
+                            </span>
                         </td>
                     </tr>
                 ))}

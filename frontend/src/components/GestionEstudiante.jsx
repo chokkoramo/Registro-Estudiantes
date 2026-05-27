@@ -35,30 +35,33 @@ export default function GestionEstudiante() {
     };
 
     return (
-        <div>
+        <div className="card">
             <h2>Gestión Individual por ID</h2>
 
-            <div>
-                <label>ID del Estudiante:<input type="number" min={1} value={id} onChange={(e) => setId(e.target.value)} /></label>
+            <div className="form-group">
+                <label>ID del Estudiante</label>
+                <input type="number" min={1} value={id} onChange={(e) => setId(e.target.value)} />
             </div>
 
-            <div style={{ marginTop: '20px', padding: '10px', border: '1px solid gray' }}>
+            <div className="section-box">
                 <h3>Asignar Notas</h3>
-                <input
-                    placeholder="Ej: 4.5, 3.2, 5.0"
-                    value={notasStr}
-                    onChange={(e) => setNotasStr(e.target.value)}
-                />
-                <button onClick={handleAsignarNotas} style={{ marginLeft: '10px' }}>Guardar Notas</button>
+                <div className="form-group">
+                    <input
+                        placeholder="Ej: 4.5, 3.2, 5.0"
+                        value={notasStr}
+                        onChange={(e) => setNotasStr(e.target.value)}
+                    />
+                </div>
+                <button onClick={handleAsignarNotas}>Guardar Notas</button>
             </div>
 
-            <div style={{ marginTop: '20px' }}>
+            <div className="form-actions" style={{ marginTop: '24px' }}>
                 <button onClick={handleVerPromedio}>Consultar Promedio</button>
-                <button onClick={handleVerEstado} style={{ marginLeft: '10px' }}>Consultar Estado</button>
-                <button onClick={handleEliminar} style={{ marginLeft: '10px', color: 'white', background: 'red' }}>Eliminar Estudiante</button>
+                <button onClick={handleVerEstado}>Consultar Estado</button>
+                <button className="btn-danger" onClick={handleEliminar}>Eliminar Estudiante</button>
             </div>
 
-            {resultado && <div style={{ marginTop: '20px', color: 'blue' }}><strong>{resultado}</strong></div>}
+            {resultado && <p className="msg-info"><strong>{resultado}</strong></p>}
         </div>
     );
 }

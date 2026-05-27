@@ -21,22 +21,22 @@ export default function Registro() {
     };
 
     return (
-        <div>
+        <div className="card">
             <h2>Registrar Nuevo Estudiante</h2>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Nombre:<input value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-                    </label>
+                <div className="form-group">
+                    <label>Nombre</label>
+                    <input value={nombre} onChange={(e) => setNombre(e.target.value)} required />
                 </div>
-                <div style={{ marginTop: '10px' }}>
-                    <label>Programa:<input value={programa} onChange={(e) => setPrograma(e.target.value)} required />
-                    </label>
+                <div className="form-group">
+                    <label>Programa</label>
+                    <input value={programa} onChange={(e) => setPrograma(e.target.value)} required />
                 </div>
-                <button type="submit" style={{ marginTop: '15px' }}>Registrar</button>
+                <button type="submit">Registrar</button>
             </form>
 
             {mensaje && (
-                <p data-testid="mensaje-notificacion" style={{ marginTop: '20px', color: 'green', fontWeight: 'bold' }}>
+                <p data-testid="mensaje-notificacion" className="msg-success">
                     {mensaje}
                 </p>
             )}

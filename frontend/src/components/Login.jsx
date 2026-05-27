@@ -31,39 +31,42 @@ export default function Login({ onLogin }) {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '80px auto', padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}>
-            <h2>{esRegistro ? 'Registro de Usuario' : 'Iniciar Sesión'}</h2>
-            <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Usuario: <input
+        <div className="login-container">
+            <div className="card">
+                <h2>{esRegistro ? 'Registro de Usuario' : 'Iniciar Sesión'}</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Usuario</label>
+                        <input
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            style={{ display: 'block', width: '100%', marginTop: '4px' }}
                         />
-                    </label>
-                </div>
-                <div style={{ marginBottom: '10px' }}>
-                    <label>Contraseña: <input
+                    </div>
+                    <div className="form-group">
+                        <label>Contraseña</label>
+                        <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            style={{ display: 'block', width: '100%', marginTop: '4px' }}
                         />
-                    </label>
-                </div>
-                <button type="submit" style={{ marginRight: '10px' }}>
-                    {esRegistro ? 'Registrarse' : 'Ingresar'}
-                </button>
-                <button
-                    type="button"
-                    onClick={() => { setEsRegistro(!esRegistro); setMensaje(''); }}
-                >
-                    {esRegistro ? 'Ya tengo cuenta' : 'Crear cuenta'}
-                </button>
-            </form>
+                    </div>
+                    <div className="form-actions">
+                        <button type="submit">
+                            {esRegistro ? 'Registrarse' : 'Ingresar'}
+                        </button>
+                        <button
+                            type="button"
+                            className="toggle-link"
+                            onClick={() => { setEsRegistro(!esRegistro); setMensaje(''); }}
+                        >
+                            {esRegistro ? 'Ya tengo cuenta' : 'Crear cuenta'}
+                        </button>
+                    </div>
+                </form>
 
-            {mensaje && <p style={{ marginTop: '10px', color: 'red' }}>{mensaje}</p>}
+                {mensaje && <p className="msg-error">{mensaje}</p>}
+            </div>
         </div>
     );
 }
