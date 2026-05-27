@@ -12,7 +12,7 @@ public class LoginPage {
     }
 
     public void irALogin() {
-        page.navigate("http://localhost:3001/");
+        page.navigate("http://web-api:3001/");
     }
 
     public void clickCrearCuenta() {
