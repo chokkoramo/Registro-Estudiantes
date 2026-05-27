@@ -77,6 +77,8 @@ jacoco {
 tasks.withType<Test> {
     useJUnitPlatform()
 
+    exclude("**/runners/**")
+
     jvmArgs(
         "-javaagent:${configurations.testRuntimeClasspath.get()
             .find { it.name.contains("byte-buddy-agent") }?.absolutePath}"
@@ -94,6 +96,8 @@ tasks.register<Test>("acceptanceTest") {
 
     testClassesDirs = sourceSets["test"].output.classesDirs
     classpath = sourceSets["test"].runtimeClasspath
+
+    include("**/runners/RunCucumberTest.class")
 
     systemProperty("cucumber.plugin", "pretty")
 
