@@ -27,8 +27,4 @@ public class RegistroPage {
                 new Page.GetByRoleOptions().setName("Registrar")
         ).click();
     }
-
-    public String obtenerMensajeConfirmacion() {
-        return page.getByTestId("mensaje-notificacion").innerText();
-    }
 }

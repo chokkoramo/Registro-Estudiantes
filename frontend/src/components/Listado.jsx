@@ -34,12 +34,22 @@ export default function Listados() {
                 </thead>
                 <tbody>
                 {estudiantes.map((est) => (
-                    <tr key={est.id}>
+                    <tr key={est.id} data-testid="fila-estudiante">
                         <td>{est.id}</td>
-                        <td>{est.nombre}</td>
-                        <td>{est.programa}</td>
+
+                        <td data-testid="nombre-estudiante">
+                            {est.nombre}
+                        </td>
+
+                        <td data-testid="programa-estudiante">
+                            {est.programa}
+                        </td>
+
                         <td>{est.promedio.toFixed(2)}</td>
-                        <td>{est.aprobado ? '✅ Aprobado' : '❌ Reprobado'}</td>
+
+                        <td data-testid="estado-estudiante">
+                            {est.aprobado ? 'Aprobado' : 'Reprobado'}
+                        </td>
                     </tr>
                 ))}
                 </tbody>

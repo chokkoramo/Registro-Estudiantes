@@ -19,4 +19,10 @@ public class InicioPage {
                 new Page.GetByRoleOptions().setName("Registrar Estudiante")
         ).click();
     }
+
+    public void irAListado() {
+        page.getByRole(AriaRole.LINK,
+                new Page.GetByRoleOptions().setName("Ver Listado")
+        ).click();
+    }
 }
