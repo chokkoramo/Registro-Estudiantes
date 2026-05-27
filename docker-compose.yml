@@ -1,6 +1,6 @@
 services:
 
-  registro-estudiantes-api:
+  web-api:
     build:
       context: .
       dockerfile: Dockerfile
@@ -15,6 +15,20 @@ services:
       - SPRING_DATASOURCE_PASSWORD=
       - SPRING_H2_CONSOLE_ENABLED=true
       - SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS=true
+    networks:
+      - jmeter-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3001:80"
+    environment:
+      - REACT_APP_API_URL=http://web-api:8080
+    depends_on:
+      - web-api
     networks:
       - jmeter-net
 

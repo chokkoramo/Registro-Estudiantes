@@ -174,7 +174,7 @@ stages:
             clean: false
 
           - script: |
-              nohup ./gradlew bootRun > app.log 2>&1 &
+              docker-compose up -d
             displayName: "Levantar API"
 
           - script: |
