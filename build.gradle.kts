@@ -18,7 +18,7 @@ java {
     }
 }
 
-dependencyLocking{
+dependencyLocking {
     lockAllConfigurations()
 }
 
@@ -83,9 +83,8 @@ tasks.withType<Test> {
     )
 
     systemProperty("file.encoding", "UTF-8")
-
-    finalizedBy(tasks.jacocoTestReport)
 }
+
 tasks.named<Test>("test") {
     exclude("**/runners/**")
 }
@@ -108,11 +107,11 @@ tasks.register<Test>("acceptanceTest") {
 }
 
 tasks.jacocoTestReport {
-    dependsOn(tasks.test, tasks.named("acceptanceTest"))
+    dependsOn(tasks.test)
 
     executionData.setFrom(
         layout.buildDirectory.asFileTree.matching {
-            include("jacoco/*.exec")
+            include("jacoco/test.exec")
         }
     )
 
