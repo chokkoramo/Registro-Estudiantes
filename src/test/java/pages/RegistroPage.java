@@ -10,20 +10,25 @@ public class RegistroPage {
         this.page = page;
     }
 
-    public void URL() {
-        page.navigate("http://localhost:3001/registro/");
+    public void ingresarNombre(String nombre) {
+        page.getByRole(AriaRole.TEXTBOX,
+                new Page.GetByRoleOptions().setName("Nombre:")
+        ).fill(nombre);
     }
 
-    public void rellenarFormulario(String nombre, String programa) {
-        page.getByLabel("Nombre:").fill(nombre);
-        page.getByLabel("Programa:").fill(programa);
+    public void ingresarPrograma(String programa) {
+        page.getByRole(AriaRole.TEXTBOX,
+                new Page.GetByRoleOptions().setName("Programa:")
+        ).fill(programa);
     }
 
-    public void hacerClickEnRegistrar() {
-        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Registrar")).click();
+    public void clickRegistrar() {
+        page.getByRole(AriaRole.BUTTON,
+                new Page.GetByRoleOptions().setName("Registrar")
+        ).click();
     }
 
-    public String obtenerTextoNotificacion() {
-        return page.getByTestId("mensaje-notificacion").textContent();
+    public String obtenerMensajeConfirmacion() {
+        return page.getByTestId("mensaje-notificacion").innerText();
     }
 }

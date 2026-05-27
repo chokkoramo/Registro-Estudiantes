@@ -11,7 +11,6 @@ import static io.cucumber.core.options.Constants.*;
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "definitions")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:build/reports/cucumber/cucumber.html")
 @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@2E2")
 
