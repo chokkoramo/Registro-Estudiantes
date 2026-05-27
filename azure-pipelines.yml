@@ -66,6 +66,54 @@ stages:
           - checkout: self
             clean: false
 
+          - task: NodeTool@0
+            displayName: 'Instalar Node.js'
+            inputs:
+              versionSpec: '20.x'
+
+          - script: |
+              set -e
+              mkdir -p build
+              ./gradlew bootJar -x test -x acceptanceTest --no-daemon
+              java -jar build/libs/*.jar > build/backend-acceptance.log 2>&1 &
+              echo $! > build/backend-acceptance.pid
+
+              for i in {1..45}; do
+                if curl -fsS http://localhost:8080/api/estudiantes > /dev/null; then
+                  echo "Backend listo"
+                  exit 0
+                fi
+                sleep 2
+              done
+
+              echo "El backend no inicio a tiempo"
+              tail -n 120 build/backend-acceptance.log || true
+              exit 1
+            displayName: 'Levantar backend para Acceptance'
+
+          - script: |
+              set -e
+              cd frontend
+              npm ci --cache ../build/npm-cache
+              REACT_APP_API_URL=http://localhost:8080 PORT=3001 BROWSER=none npm start > ../build/frontend-acceptance.log 2>&1 &
+              echo $! > ../build/frontend-acceptance.pid
+
+              for i in {1..45}; do
+                if curl -fsS http://localhost:3001 > /dev/null; then
+                  echo "Frontend listo"
+                  exit 0
+                fi
+                sleep 2
+              done
+
+              echo "El frontend no inicio a tiempo"
+              tail -n 120 ../build/frontend-acceptance.log || true
+              exit 1
+            displayName: 'Levantar frontend para Acceptance'
+
+          - script: ./gradlew installPlaywrightBrowsers --no-daemon
+            displayName: 'Instalar Chromium de Playwright'
+
           - task: Gradle@3
             displayName: 'Run Acceptance Tests'
             inputs:
@@ -74,13 +122,39 @@ stages:
               tasks: 'acceptanceTest'
               publishJUnitResults: false
             env:
-              FRONTEND_URL: http://frontend
+              FRONTEND_URL: http://localhost:3001
 
           - task: PublishTestResults@2
             displayName: "Publish Acceptance Tests"
+            condition: succeededOrFailed()
             inputs:
               testResultsFiles: 'build/test-results/acceptanceTest/TEST-*.xml'
               testRunTitle: "Acceptance Tests"
+
+          - script: |
+              set +e
+              mkdir -p build/acceptance-logs
+              cp build/*-acceptance.log build/acceptance-logs/ 2>/dev/null || true
+            displayName: 'Preparar logs Acceptance'
+            condition: succeededOrFailed()
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publicar logs Acceptance'
+            condition: succeededOrFailed()
+            inputs:
+              pathToPublish: 'build/acceptance-logs'
+              artifactName: 'acceptance-logs'
+
+          - script: |
+              set +e
+              if [ -f build/frontend-acceptance.pid ]; then
+                kill "$(cat build/frontend-acceptance.pid)" 2>/dev/null || true
+              fi
+              if [ -f build/backend-acceptance.pid ]; then
+                kill "$(cat build/backend-acceptance.pid)" 2>/dev/null || true
+              fi
+            displayName: 'Detener servicios Acceptance'
+            condition: always()
 
   # =========================
   # 3. MUTATION TEST

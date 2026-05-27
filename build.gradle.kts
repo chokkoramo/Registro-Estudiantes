@@ -108,6 +108,15 @@ tasks.register<Test>("acceptanceTest") {
     }
 }
 
+tasks.register<JavaExec>("installPlaywrightBrowsers") {
+    description = "Installs the Chromium browser required by Playwright acceptance tests."
+    group = "verification"
+
+    classpath = sourceSets["test"].runtimeClasspath
+    mainClass.set("com.microsoft.playwright.CLI")
+    args("install", "chromium")
+}
+
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
 
