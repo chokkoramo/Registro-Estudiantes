@@ -80,6 +80,12 @@ public class EstudianteController {
                 .toList();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+        sistema.eliminarEstudiante(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public List<EstudianteResponseDTO> listar(){
         return sistema.obtenerTodos()

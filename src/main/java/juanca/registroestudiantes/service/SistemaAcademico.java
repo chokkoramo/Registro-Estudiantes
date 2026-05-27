@@ -49,4 +49,10 @@ public class SistemaAcademico {
     public List<Estudiante> obtenerTodos() {
         return estudianteRepository.findAll();
     }
+
+    public void eliminarEstudiante(Long id) {
+        Estudiante estudiante = estudianteRepository.findById(id)
+                .orElseThrow(() -> new EstudianteNoEncontradoException(id));
+        estudianteRepository.delete(estudiante);
+    }
 }

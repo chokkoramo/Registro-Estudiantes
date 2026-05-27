@@ -22,6 +22,18 @@ export default function GestionEstudiante() {
         setResultado(`El estudiante ${res.id} está: ${res.estado}`);
     };
 
+    const handleEliminar = async () => {
+        if (!id) return;
+        const ok = await api.eliminar(id);
+        if (ok) {
+            setResultado(`Estudiante con ID ${id} eliminado exitosamente`);
+            setId('');
+            setNotasStr('');
+        } else {
+            setResultado('Error al eliminar el estudiante');
+        }
+    };
+
     return (
         <div>
             <h2>Gestión Individual por ID</h2>
@@ -43,6 +55,7 @@ export default function GestionEstudiante() {
             <div style={{ marginTop: '20px' }}>
                 <button onClick={handleVerPromedio}>Consultar Promedio</button>
                 <button onClick={handleVerEstado} style={{ marginLeft: '10px' }}>Consultar Estado</button>
+                <button onClick={handleEliminar} style={{ marginLeft: '10px', color: 'white', background: 'red' }}>Eliminar Estudiante</button>
             </div>
 
             {resultado && <div style={{ marginTop: '20px', color: 'blue' }}><strong>{resultado}</strong></div>}
