@@ -22,27 +22,7 @@ stages:
             displayName: "Inicializar entorno Gradle"
 
           - task: Gradle@3
-            displayName: 'Pruebas unitarias'
-            inputs:
-              workingDirectory: '$(projectDir)'
-              gradleWrapperFile: '$(projectDir)/gradlew'
-              gradleOptions: '-Dfile.encoding=UTF-8 -Xmx3072m'
-              publishJUnitResults: true
-              testResultsFiles: '**/build/test-results/test/TEST-*.xml'
-              tasks: 'clean build test'
-
-          - task: Gradle@2
-            displayName: 'Pruebas de aceptacion (Cucumber)'
-            inputs:
-              workingDirectory: '$(projectDir)'
-              gradleWrapperFile: '$(projectDir)/gradlew'
-              gradleOptions: '-Dfile.encoding=UTF-8'
-              tasks: 'acceptanceTest'
-              testResultsFiles: '**/build/test-results/acceptanceTest/TEST-*.xml'
-              publishJUnitResults: true
-
-          - task: Gradle@3
-            displayName: 'Coverage + Sonar'
+            displayName: 'Build + Tests + Coverage + Sonar'
             inputs:
               workingDirectory: '$(projectDir)'
               gradleWrapperFile: '$(projectDir)/gradlew'
@@ -51,10 +31,11 @@ stages:
                 -Xmx3072m
                 -Dorg.gradle.wrapper.network.timeout=120000
               tasks: >
-                clean jacocoTestReport sonar
+                clean build acceptanceTest jacocoTestReport sonar
                 -Dsonar.qualitygate.wait=true
+                -Dsonar.exclusions=frontend/**
               publishJUnitResults: true
-              testResultsFiles: 'build/test-results/**/TEST-*.xml'
+              testResultsFiles: 'build/test-results/*/TEST-*.xml'
             env:
               SONAR_TOKEN: $(SONAR_TOKEN)
 
