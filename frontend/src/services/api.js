@@ -1,4 +1,4 @@
-const API_URL = 'http://https://registro-estudiantes.onrender.com:8080/api/estudiantes';
+const API_URL = 'https://registro-estudiantes.onrender.com/api/estudiantes';
 
 export const api = {
     registrar: async (estudiante) => {
