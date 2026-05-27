@@ -27,8 +27,7 @@ export default function GestionEstudiante() {
             <h2>Gestión Individual por ID</h2>
 
             <div>
-                <label>ID del Estudiante: </label>
-                <input type="number" value={id} onChange={(e) => setId(e.target.value)} />
+                <label>ID del Estudiante:<input type="number" min={1} value={id} onChange={(e) => setId(e.target.value)} /></label>
             </div>
 
             <div style={{ marginTop: '20px', padding: '10px', border: '1px solid gray' }}>

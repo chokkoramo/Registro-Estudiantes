@@ -11,9 +11,9 @@ export default function App() {
             {/* Opcional: Un menú de navegación rápido para probar */}
             <nav style={{ padding: '10px', background: '#f0f0f0', marginBottom: '20px' }}>
                 <Link to="/" style={{ marginRight: '15px' }}>Inicio</Link>
-                <Link to="/registro">Registrar Estudiante</Link>
-                <Link to="/listado">Ver Listado</Link>
-                <Link to="/GestionEstudiante">Gestionar Estudiantes</Link>
+                <Link to="/registro" style={{ marginRight: '15px' }}>Registrar Estudiante</Link>
+                <Link to="/listado" style={{ marginRight: '15px' }}>Ver Listado</Link>
+                <Link to="/GestionEstudiante" style={{ marginRight: '15px' }}>Gestionar Estudiantes</Link>
             </nav>
 
             {/* Aquí definimos qué componente se renderiza en cada URL */}
