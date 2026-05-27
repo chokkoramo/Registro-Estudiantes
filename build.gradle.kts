@@ -77,8 +77,6 @@ jacoco {
 tasks.withType<Test> {
     useJUnitPlatform()
 
-    exclude("**/runners/**")
-
     jvmArgs(
         "-javaagent:${configurations.testRuntimeClasspath.get()
             .find { it.name.contains("byte-buddy-agent") }?.absolutePath}"
@@ -87,6 +85,9 @@ tasks.withType<Test> {
     systemProperty("file.encoding", "UTF-8")
 
     finalizedBy(tasks.jacocoTestReport)
+}
+tasks.named<Test>("test") {
+    exclude("**/runners/**")
 }
 
 tasks.register<Test>("acceptanceTest") {
