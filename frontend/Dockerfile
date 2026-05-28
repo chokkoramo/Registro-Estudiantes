@@ -6,6 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --ignore-scripts
 
+ARG REACT_APP_API_URL=http://web-api:8080
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 COPY . .
 RUN npm run build
 

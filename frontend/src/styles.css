@@ -1,0 +1,325 @@
+/* ===== TEMA OSCURO MINIMALISTA ===== */
+
+:root {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --bg-card: #252525;
+    --bg-input: #2c2c2c;
+    --bg-hover: #333333;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --accent: #7c8aff;
+    --accent-hover: #9ba4ff;
+    --danger: #e05555;
+    --danger-hover: #ff6b6b;
+    --success: #4caf80;
+    --border: #3a3a3a;
+    --radius: 8px;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ===== NAV ===== */
+
+.nav {
+    display: flex;
+    align-items: center;
+    padding: 14px 28px;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nav a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.nav a:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+}
+
+.nav .user-info {
+    margin-left: auto;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* ===== BOTONES ===== */
+
+button, .btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.1s;
+    background-color: var(--accent);
+    color: #fff;
+}
+
+button:hover, .btn:hover {
+    background-color: var(--accent-hover);
+}
+
+button:active, .btn:active {
+    transform: scale(0.97);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+}
+
+.btn-secondary {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background-color: #444;
+}
+
+.btn-logout {
+    background-color: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 6px 14px;
+    font-size: 0.85rem;
+}
+
+.btn-logout:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+    background-color: transparent;
+}
+
+/* ===== INPUTS ===== */
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input {
+    background-color: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    width: 100%;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--accent);
+}
+
+input::placeholder {
+    color: var(--text-secondary);
+}
+
+label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+/* ===== CARDS / CONTENEDORES ===== */
+
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+}
+
+.page-container {
+    max-width: 900px;
+    margin: 32px auto;
+    padding: 0 20px;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 0 20px;
+}
+
+/* ===== TÍTULOS ===== */
+
+h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+/* ===== TABLAS ===== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--bg-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+thead {
+    background-color: var(--bg-secondary);
+}
+
+th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+}
+
+td {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+}
+
+tbody tr:hover {
+    background-color: var(--bg-hover);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===== MENSAJES ===== */
+
+.msg-success {
+    color: var(--success);
+    font-weight: 600;
+    margin-top: 16px;
+}
+
+.msg-error {
+    color: var(--danger);
+    font-weight: 500;
+    margin-top: 12px;
+}
+
+.msg-info {
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: 16px;
+}
+
+/* ===== FORMULARIOS ===== */
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.section-box {
+    margin-top: 24px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background-color: var(--bg-secondary);
+}
+
+/* ===== BIENVENIDA ===== */
+
+.welcome {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.welcome h2 {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+}
+
+.welcome p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* ===== ESTADO BADGES ===== */
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-aprobado {
+    background-color: rgba(76, 175, 128, 0.15);
+    color: var(--success);
+}
+
+.badge-reprobado {
+    background-color: rgba(224, 85, 85, 0.15);
+    color: var(--danger);
+}
+
+/* ===== TOGGLE LINK ===== */
+
+.toggle-link {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.toggle-link:hover {
+    color: var(--accent-hover);
+    background: none;
+}

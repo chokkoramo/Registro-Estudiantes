@@ -34,6 +34,7 @@ configurations {
 
 dependencies {
 
+
     implementation("org.springframework.boot:spring-boot-h2console")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -47,6 +48,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation(libs.playwright)
     testImplementation(libs.cucumber.java)
     testImplementation(libs.cucumber.junit)
     testImplementation(libs.junit.plataform)
@@ -104,6 +106,15 @@ tasks.register<Test>("acceptanceTest") {
     extensions.configure<JacocoTaskExtension> {
         isEnabled = true
     }
+}
+
+tasks.register<JavaExec>("installPlaywrightBrowsers") {
+    description = "Installs the Chromium browser required by Playwright acceptance tests."
+    group = "verification"
+
+    classpath = sourceSets["test"].runtimeClasspath
+    mainClass.set("com.microsoft.playwright.CLI")
+    args("install", "chromium")
 }
 
 tasks.jacocoTestReport {

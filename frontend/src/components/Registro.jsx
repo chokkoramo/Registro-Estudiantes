@@ -4,34 +4,42 @@ import { api } from '../services/api';
 export default function Registro() {
     const [nombre, setNombre] = useState('');
     const [programa, setPrograma] = useState('');
+    const [mensaje, setMensaje] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMensaje('');
         try {
             await api.registrar({ nombre, programa });
-            alert('¡Estudiante registrado con éxito!');
+            setMensaje('¡Estudiante registrado con éxito!');
             setNombre('');
             setPrograma('');
         } catch (error) {
             console.log(error);
-            alert('Error al registrar estudiante');
+            setMensaje('Error al registrar estudiante');
         }
     };
 
     return (
-        <div>
+        <div className="card">
             <h2>Registrar Nuevo Estudiante</h2>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Nombre:<input value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-                    </label>
+                <div className="form-group">
+                    <label>Nombre
+                    <input value={nombre} onChange={(e) => setNombre(e.target.value)} required /></label>
                 </div>
-                <div style={{ marginTop: '10px' }}>
-                    <label>Programa:<input value={programa} onChange={(e) => setPrograma(e.target.value)} required />
-                    </label>
+                <div className="form-group">
+                    <label>Programa
+                    <input value={programa} onChange={(e) => setPrograma(e.target.value)} required /></label>
                 </div>
-                <button type="submit" style={{ marginTop: '15px' }}>Registrar</button>
+                <button type="submit">Registrar</button>
             </form>
+
+            {mensaje && (
+                <p data-testid="mensaje-notificacion" className="msg-success">
+                    {mensaje}
+                </p>
+            )}
         </div>
     );
 }

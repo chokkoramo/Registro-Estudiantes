@@ -1,30 +1,45 @@
 import { useState } from 'react';
-import Registro from "./components/Registro.jsx";
-import Listados from "./components/Listado.jsx";
-import GestionEstudiante from "./components/GestionEstudiante.jsx";
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import Registro from './components/Registro.jsx';
+import Listado from './components/Listado.jsx';
+import GestionEstudiante from './components/GestionEstudiante.jsx';
+import Login from './components/Login.jsx';
 
-function App() {
-  const [vistaActiva, setVistaActiva] = useState('registro');
+const Inicio = () => (
+    <div className="welcome">
+        <h2>Bienvenido al Sistema de Estudiantes</h2>
+        <p>Selecciona una opción del menú para comenzar.</p>
+    </div>
+);
 
-  return (
-      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif', maxWidth: '800px', margin: 'auto' }}>
-        <h1>🎓 Sistema de Registro de Estudiantes</h1>
+export default function App() {
+    const [usuario, setUsuario] = useState(null);
 
-        {/* Menú de Navegación */}
-        <nav style={{ marginBottom: '30px', paddingBottom: '10px', borderBottom: '2px solid black' }}>
-          <button onClick={() => setVistaActiva('registro')} style={{ marginRight: '10px' }}>📝 Registro</button>
-          <button onClick={() => setVistaActiva('listados')} style={{ marginRight: '10px' }}>📋 Listas y Ranking</button>
-          <button onClick={() => setVistaActiva('gestion')}>⚙️ Notas y Consultas</button>
-        </nav>
+    const handleLogout = () => setUsuario(null);
 
-        {/* Renderizado condicional de componentes */}
-        <main>
-          {vistaActiva === 'registro' && <Registro />}
-          {vistaActiva === 'listados' && <Listados />}
-          {vistaActiva === 'gestion' && <GestionEstudiante />}
-        </main>
-      </div>
-  );
+    if (!usuario) {
+        return <Login onLogin={setUsuario} />;
+    }
+
+    return (
+        <BrowserRouter>
+            <nav className="nav">
+                <Link to="/">Inicio</Link>
+                <Link to="/registro">Registrar Estudiante</Link>
+                <Link to="/listado">Ver Listado</Link>
+                <Link to="/GestionEstudiante">Gestionar Estudiantes</Link>
+                <span className="user-info">Hola, {usuario.username}</span>
+                <button className="btn-logout" onClick={handleLogout}>Cerrar Sesión</button>
+            </nav>
+
+            <div className="page-container">
+                <Routes>
+                    <Route path="/" element={<Inicio />} />
+                    <Route path="/registro" element={<Registro />} />
+                    <Route path="/listado" element={<Listado />} />
+                    <Route path="/GestionEstudiante" element={<GestionEstudiante />} />
+                </Routes>
+            </div>
+        </BrowserRouter>
+    );
 }
-
-export default App;

@@ -1,4 +1,25 @@
-const API_URL = 'https://registro-estudiantes.onrender.com/api/estudiantes';
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const API_URL = `${BASE_URL}/api/estudiantes`;
+const AUTH_URL = `${BASE_URL}/api/auth`;
+
+export const authApi = {
+    login: async (username, password) => {
+        const res = await fetch(`${AUTH_URL}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        return { ok: res.ok, data: await res.json() };
+    },
+    registro: async (username, password) => {
+        const res = await fetch(`${AUTH_URL}/registro`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        return { ok: res.ok, data: await res.json() };
+    }
+};
 
 export const api = {
     registrar: async (estudiante) => {
@@ -33,5 +54,9 @@ export const api = {
     obtenerEstado: async (id) => {
         const res = await fetch(`${API_URL}/${id}/estado`);
         return res.json();
+    },
+    eliminar: async (id) => {
+        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        return res.ok;
     }
 };
